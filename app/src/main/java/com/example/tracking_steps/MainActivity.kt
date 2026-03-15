@@ -25,6 +25,7 @@ import androidx.health.connect.client.records.StepsRecord
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.example.feature_home.Home
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -73,29 +74,9 @@ class MainActivity : ComponentActivity() {
                     val healthConnectClient = HealthConnectClient.getOrCreate(this@MainActivity)
                     checkPermissionsAndRun(healthConnectClient)
                 }
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Hello World",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+
+                Home(modifier = Modifier)
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    TrackingStepsTheme {
-        Greeting("Android")
     }
 }
