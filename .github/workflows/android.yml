@@ -37,4 +37,7 @@ jobs:
       - name: Build project
         run: ./gradlew
 
+      - name: Run lint
+        run: ./gradlew lint
+
 
