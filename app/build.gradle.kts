@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.example.tracking_steps"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.tracking_steps"
