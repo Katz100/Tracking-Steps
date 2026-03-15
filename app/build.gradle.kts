@@ -60,4 +60,7 @@ dependencies {
     // health connect
     implementation("androidx.health:health-services-client:1.1.0-rc01")
     implementation("androidx.health.connect:connect-client:1.2.0-alpha02")
+
+    // core
+    implementation(project(":core-permissions"))
 }
