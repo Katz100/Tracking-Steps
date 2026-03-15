@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Tracking-Steps"
 include(":app")
- 
+include(":core-permissions")

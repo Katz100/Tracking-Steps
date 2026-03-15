@@ -5,13 +5,13 @@ plugins {
 }
 
 android {
-    namespace = "com.example.tracking_steps"
+    namespace = "com.example.core_permissions"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.tracking_steps"
+        applicationId = "com.example.core_permissions"
         minSdk = 31
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -57,7 +57,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    // health connect
-    implementation("androidx.health:health-services-client:1.1.0-rc01")
-    implementation("androidx.health.connect:connect-client:1.2.0-alpha02")
+    // dependent on
+    implementation(project(":app"))
 }
