@@ -1,6 +1,5 @@
 package com.example.tracking_steps
 
-import android.health.connect.HealthConnectManager
 import android.os.Build
 import android.os.Bundle
 import android.os.ext.SdkExtensions
@@ -9,26 +8,30 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import com.example.tracking_steps.ui.theme.TrackingStepsTheme
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.PermissionController
 import androidx.health.connect.client.permission.HealthPermission
 import androidx.health.connect.client.records.StepsRecord
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.health.connect.client.records.metadata.Device
 import com.example.feature_home.Home
-import kotlinx.coroutines.launch
+import com.example.utility.WriteStepsService
+import dagger.hilt.android.AndroidEntryPoint
+import java.time.Instant
+import java.time.ZoneOffset
+import javax.inject.Inject
+import androidx.health.connect.client.records.metadata.Metadata
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var writeStepsService: WriteStepsService
+
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -73,6 +76,28 @@ class MainActivity : ComponentActivity() {
                 LaunchedEffect(Unit) {
                     val healthConnectClient = HealthConnectClient.getOrCreate(this@MainActivity)
                     checkPermissionsAndRun(healthConnectClient)
+                    val startTime = Instant.now().minusSeconds(3600)
+                    val endTime = Instant.now()
+
+                    val startOffset = ZoneOffset.systemDefault().rules.getOffset(startTime)
+                    val endOffset = ZoneOffset.systemDefault().rules.getOffset(endTime)
+
+                    val metadata = Metadata.autoRecorded(
+                        device = Device(
+                            manufacturer = Build.MANUFACTURER,
+                            model = Build.MODEL,
+                            type = Device.TYPE_PHONE
+                        )
+                    )
+
+                    val response = writeStepsService.writeStepsData(
+                        startTime = startTime,
+                        endTime = endTime,
+                        startZoneOffset = startOffset,
+                        endZoneOffset = endOffset,
+                        metadata = metadata
+                    )
+                    Log.i("Tag", response.toString())
                 }
 
                 Home(modifier = Modifier)
