@@ -1,5 +1,6 @@
 package com.example.tracking_steps
 
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.ext.SdkExtensions
@@ -11,12 +12,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.core.content.ContextCompat
 import com.example.tracking_steps.ui.theme.TrackingStepsTheme
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.PermissionController
@@ -31,7 +28,11 @@ import java.time.ZoneOffset
 import javax.inject.Inject
 import androidx.health.connect.client.records.metadata.Metadata
 import androidx.lifecycle.lifecycleScope
+import com.example.utility.StepSensorListener
+import com.example.utility.StepSensorManager
 import kotlinx.coroutines.launch
+import android.Manifest
+import androidx.activity.result.contract.ActivityResultContracts
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -39,33 +40,54 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var writeStepsService: HealthConnectService
 
-    var cancelled = 0
+    @Inject
+    lateinit var stepSensorListener: StepSensorListener
+
+    @Inject
+    lateinit var stepSensorManager: StepSensorManager
+
+    val requestPermissionActivityContract = PermissionController.createRequestPermissionResultContract()
+    val requestPermissionForActivity = ActivityResultContracts.RequestPermission()
+
+    val requestPermissions = registerForActivityResult(requestPermissionActivityContract) { granted ->
+        if (granted.containsAll(HealthConnectService.PERMISSIONS)) {
+            Log.i("MainActivity", "Permissions granted")
+        } else {
+            Log.i("MainActivity", "Permissions not granted")
+        }
+    }
+
+    private val activityRecognitionPermissionLauncher = registerForActivityResult(requestPermissionForActivity) { granted ->
+            if (granted) {
+                stepSensorManager.registerListener()
+            } else {
+                Log.i("MainActivity", "Permission denied")
+            }
+        }
+
+    override fun onResume() {
+        super.onResume()
+        if (HealthConnectService.isActivityRecognitionGranted(this)) {
+            stepSensorManager.registerListener()
+        } else {
+            activityRecognitionPermissionLauncher.launch(
+                Manifest.permission.ACTIVITY_RECOGNITION
+            )
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        stepSensorManager.unregisterListener()
+    }
 
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        val isStepTrackingAvailable = SdkExtensions.getExtensionVersion(Build.VERSION_CODES.UPSIDE_DOWN_CAKE) >= 20
-
-        val isAvailable = HealthConnectClient.getSdkStatus(this)
-
-        // Create the permissions launcher
-        val requestPermissionActivityContract = PermissionController.createRequestPermissionResultContract()
-
-        // Create a set of permissions for required data types
-        val PERMISSIONS =
-            setOf(
-                HealthPermission.getReadPermission(StepsRecord::class),
-                HealthPermission.getWritePermission(StepsRecord::class)
-            )
-
-        val requestPermissions = registerForActivityResult(requestPermissionActivityContract) { granted ->
-            if (granted.containsAll(PERMISSIONS)) {
-                Log.i("MainActivity", "Permissions granted")
-            } else {
-
-            }
+        stepSensorListener.onStepDetected = {
+            Log.i("MainActivity", "A step has been made")
         }
 
         setContent {
@@ -78,9 +100,6 @@ class MainActivity : ComponentActivity() {
                         onRequestPermissions = {
                             lifecycleScope.launch {
                                 if (!writeStepsService.hasAllPermissions()) {
-                                    val availability = HealthConnectClient.getSdkStatus(this@MainActivity)
-                                    Log.i("MainActivity", "Health Connect availability: $availability")
-                                    Log.i("MainActivity", "Permissions to be requested: ${PERMISSIONS}")
                                     requestPermissions.launch(HealthConnectService.PERMISSIONS)
                                 } else {
                                     Toast.makeText(this@MainActivity, "Permissions already granted",

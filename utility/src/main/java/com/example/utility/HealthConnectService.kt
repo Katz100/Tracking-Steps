@@ -1,6 +1,10 @@
 package com.example.utility
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
 import android.util.Log
+import androidx.core.content.ContextCompat
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.permission.HealthPermission
 import androidx.health.connect.client.records.StepsRecord
@@ -24,12 +28,18 @@ class HealthConnectService @Inject constructor(
                 HealthPermission.getReadPermission(StepsRecord::class),
                 HealthPermission.getWritePermission(StepsRecord::class)
             )
+
+        fun isActivityRecognitionGranted(context: Context): Boolean {
+            return ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACTIVITY_RECOGNITION
+            ) == PackageManager.PERMISSION_GRANTED
+        }
     }
 
     suspend fun hasAllPermissions(
     ): Boolean {
         val granted = healthConnectClient.permissionController.getGrantedPermissions()
-        Log.i(TAG, "Granted permissions: $granted")
         return granted.containsAll(PERMISSIONS)
     }
 

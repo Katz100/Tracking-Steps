@@ -11,7 +11,7 @@ import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
-object WriteStepsModule {
+object HealthConnectModule {
 
     @Singleton
     @Provides
@@ -20,4 +20,5 @@ object WriteStepsModule {
     ): HealthConnectClient {
         return HealthConnectClient.getOrCreate(context)
     }
+
 }
