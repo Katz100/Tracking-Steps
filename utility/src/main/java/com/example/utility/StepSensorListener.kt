@@ -3,7 +3,6 @@ package com.example.utility
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
-import android.util.Log
 import javax.inject.Inject
 
 class StepSensorListener @Inject constructor(): SensorEventListener {
@@ -20,7 +19,6 @@ class StepSensorListener @Inject constructor(): SensorEventListener {
         event?.let {
             if (it.sensor.type == Sensor.TYPE_STEP_DETECTOR) {
                 val stepDetected = it.values[0]
-                Log.i(TAG, "A step has been made")
                 onStepDetected()
             }
         }

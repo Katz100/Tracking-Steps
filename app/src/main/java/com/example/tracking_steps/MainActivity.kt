@@ -1,9 +1,7 @@
 package com.example.tracking_steps
 
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.os.ext.SdkExtensions
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -13,12 +11,8 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
-import androidx.core.content.ContextCompat
 import com.example.tracking_steps.ui.theme.TrackingStepsTheme
-import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.PermissionController
-import androidx.health.connect.client.permission.HealthPermission
-import androidx.health.connect.client.records.StepsRecord
 import androidx.health.connect.client.records.metadata.Device
 import com.example.feature_home.Home
 import com.example.utility.HealthConnectService
@@ -33,6 +27,9 @@ import com.example.utility.StepSensorManager
 import kotlinx.coroutines.launch
 import android.Manifest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
+import androidx.compose.runtime.collectAsState
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -43,11 +40,14 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var stepSensorListener: StepSensorListener
 
+
     @Inject
     lateinit var stepSensorManager: StepSensorManager
 
+    val viewModel: MainViewModel by viewModels()
+
     val requestPermissionActivityContract = PermissionController.createRequestPermissionResultContract()
-    val requestPermissionForActivity = ActivityResultContracts.RequestPermission()
+    val requestPermissionResultContractsForActivity = ActivityResultContracts.RequestPermission()
 
     val requestPermissions = registerForActivityResult(requestPermissionActivityContract) { granted ->
         if (granted.containsAll(HealthConnectService.PERMISSIONS)) {
@@ -57,9 +57,11 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private val activityRecognitionPermissionLauncher = registerForActivityResult(requestPermissionForActivity) { granted ->
+    private val activityRecognitionPermissionLauncher = registerForActivityResult(requestPermissionResultContractsForActivity) { granted ->
             if (granted) {
-                stepSensorManager.registerListener()
+                stepSensorManager.registerListener {
+                    viewModel.increaseStepCounter()
+                }
             } else {
                 Log.i("MainActivity", "Permission denied")
             }
@@ -68,7 +70,9 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         if (HealthConnectService.isActivityRecognitionGranted(this)) {
-            stepSensorManager.registerListener()
+            stepSensorManager.registerListener {
+                viewModel.increaseStepCounter()
+            }
         } else {
             activityRecognitionPermissionLauncher.launch(
                 Manifest.permission.ACTIVITY_RECOGNITION
@@ -87,16 +91,20 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         stepSensorListener.onStepDetected = {
-            Log.i("MainActivity", "A step has been made")
+            viewModel.increaseStepCounter()
         }
 
         setContent {
+
+            val stepsCounter = viewModel.stepsCounter.collectAsState().value
+
             TrackingStepsTheme {
                 Scaffold(
                     modifier = Modifier
                 ) { innerPadding ->
                     Home(
                         modifier = Modifier.padding(innerPadding),
+                        steps = stepsCounter,
                         onRequestPermissions = {
                             lifecycleScope.launch {
                                 if (!writeStepsService.hasAllPermissions()) {

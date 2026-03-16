@@ -17,12 +17,15 @@ fun Home(
     modifier: Modifier = Modifier,
     onRequestPermissions: () -> Unit,
     onWriteSteps: (Long) -> Unit,
+    steps: Int,
 ){
     Box(modifier = modifier
         .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         Column() {
+            Text(steps.toString())
+
             Button(
                 modifier = Modifier.padding(bottom = 100.dp),
                 onClick = onRequestPermissions
