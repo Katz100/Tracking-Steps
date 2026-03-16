@@ -19,15 +19,7 @@ class StepSensorManager @Inject constructor(
     private val accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR)
 
     fun registerListener() {
-        if (accelerometer == null) {
-            Log.w(TAG, "TYPE_STEP_DETECTOR not available on this device")
-            return
-        } else {
-            Log.i(TAG, "Detector is available")
-        }
-        val registered = sensorManager.registerListener(stepSensorListener, accelerometer, SensorManager.SENSOR_DELAY_NORMAL)
-
-        Log.i(TAG, "Registered? $registered")
+        sensorManager.registerListener(stepSensorListener, accelerometer, SensorManager.SENSOR_DELAY_NORMAL)
     }
 
     fun unregisterListener() {
