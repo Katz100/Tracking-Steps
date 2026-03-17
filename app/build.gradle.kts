@@ -76,11 +76,11 @@ dependencies {
     implementation("androidx.health:health-services-client:1.1.0-rc01")
     implementation("androidx.health.connect:connect-client:1.2.0-alpha02")
     implementation(project(":permissions-details"))
+    implementation(project(":home"))
 
     // core
 
     // feature
-    implementation(project(":feature-home"))
 
     // utility
     implementation(project(":utility"))

@@ -29,7 +29,6 @@ import android.Manifest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
-import androidx.hilt.navigation.compose.hiltViewModel
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -39,7 +38,6 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var stepSensorListener: StepSensorListener
-
 
     @Inject
     lateinit var stepSensorManager: StepSensorManager

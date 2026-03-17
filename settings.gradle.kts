@@ -22,6 +22,6 @@ dependencyResolutionManagement {
 rootProject.name = "Tracking-Steps"
 include(":app")
 include(":permissions-details")
-include(":feature-home")
-project(":feature-home").projectDir = file("feature/feature-home")
+include(":home")
+project(":home").projectDir = file("feature/home")
 include(":utility")
