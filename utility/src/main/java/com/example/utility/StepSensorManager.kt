@@ -17,8 +17,12 @@ class StepSensorManager @Inject constructor(
     private val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
     private val accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR)
 
-    fun registerListener(onStepDetected: () -> Unit) {
-        stepSensorListener.onStepDetected = onStepDetected
+    fun registerListener(
+        onActiveStepDetected: () -> Unit,
+        onTotalStepCountChanged: (Int) -> Unit,
+    ) {
+        stepSensorListener.onTotalStepCountChanged = onTotalStepCountChanged
+        stepSensorListener.onActiveStepDetected = onActiveStepDetected
         sensorManager.registerListener(stepSensorListener, accelerometer, SensorManager.SENSOR_DELAY_NORMAL)
     }
 

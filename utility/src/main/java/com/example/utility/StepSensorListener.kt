@@ -7,7 +7,8 @@ import javax.inject.Inject
 
 class StepSensorListener @Inject constructor(): SensorEventListener {
 
-    var onStepDetected: () -> Unit = {}
+    var onActiveStepDetected: () -> Unit = {}
+    var onTotalStepCountChanged: (Int) -> Unit = {}
 
     companion object {
         const val TAG = "StepSensorListener"
@@ -19,7 +20,12 @@ class StepSensorListener @Inject constructor(): SensorEventListener {
         event?.let {
             if (it.sensor.type == Sensor.TYPE_STEP_DETECTOR) {
                 val stepDetected = it.values[0]
-                onStepDetected()
+                onActiveStepDetected()
+            }
+
+            if (event.sensor.type == Sensor.TYPE_STEP_COUNTER) {
+                val totalStepsSinceReboot = event.values[0].toInt()
+                onTotalStepCountChanged(totalStepsSinceReboot)
             }
         }
     }

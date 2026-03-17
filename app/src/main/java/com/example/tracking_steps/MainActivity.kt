@@ -57,9 +57,7 @@ class MainActivity : ComponentActivity() {
 
     private val activityRecognitionPermissionLauncher = registerForActivityResult(requestPermissionResultContractsForActivity) { granted ->
             if (granted) {
-                stepSensorManager.registerListener {
-                    viewModel.increaseStepCounter()
-                }
+                stepSensorManager.registerListener(viewModel::increaseStepCounter) {}
             } else {
                 Log.i("MainActivity", "Permission denied")
             }
@@ -68,9 +66,7 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         if (HealthConnectService.isActivityRecognitionGranted(this)) {
-            stepSensorManager.registerListener {
-                viewModel.increaseStepCounter()
-            }
+            stepSensorManager.registerListener(viewModel::increaseStepCounter) {}
         } else {
             activityRecognitionPermissionLauncher.launch(
                 Manifest.permission.ACTIVITY_RECOGNITION
@@ -87,10 +83,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
-        stepSensorListener.onStepDetected = {
-            viewModel.increaseStepCounter()
-        }
 
         setContent {
 

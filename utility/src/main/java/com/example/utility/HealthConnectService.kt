@@ -3,17 +3,19 @@ package com.example.utility
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.permission.HealthPermission
 import androidx.health.connect.client.records.StepsRecord
+import androidx.health.connect.client.records.WeightRecord
 import androidx.health.connect.client.records.metadata.Metadata
 import androidx.health.connect.client.request.AggregateRequest
 import androidx.health.connect.client.response.InsertRecordsResponse
 import androidx.health.connect.client.time.TimeRangeFilter
+import androidx.health.connect.client.units.Mass
 import java.time.Instant
 import java.time.ZoneOffset
+import java.time.ZonedDateTime
 import javax.inject.Inject
 
 class HealthConnectService @Inject constructor(
@@ -26,7 +28,9 @@ class HealthConnectService @Inject constructor(
         val PERMISSIONS =
             setOf(
                 HealthPermission.getReadPermission(StepsRecord::class),
-                HealthPermission.getWritePermission(StepsRecord::class)
+                HealthPermission.getWritePermission(StepsRecord::class),
+                HealthPermission.getReadPermission(WeightRecord::class),
+                HealthPermission.getWritePermission(WeightRecord::class),
             )
 
         fun isActivityRecognitionGranted(context: Context): Boolean {
@@ -84,6 +88,22 @@ class HealthConnectService @Inject constructor(
             response[StepsRecord.COUNT_TOTAL]
         } catch (e: Exception) {
             onError(e.message.toString())
+            null
+        }
+    }
+
+    suspend fun writeWeightInput(weightInput: Double): InsertRecordsResponse? {
+        val time = ZonedDateTime.now().withNano(0)
+        val weightRecord = WeightRecord(
+            metadata = Metadata.manualEntry(),
+            weight = Mass.pounds(weightInput),
+            time = time.toInstant(),
+            zoneOffset = time.offset
+        )
+        val records = listOf(weightRecord)
+        return try {
+            healthConnectClient.insertRecords(records)
+        } catch (e: Exception) {
             null
         }
     }

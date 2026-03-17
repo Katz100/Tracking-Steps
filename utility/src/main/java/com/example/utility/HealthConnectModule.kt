@@ -20,5 +20,4 @@ object HealthConnectModule {
     ): HealthConnectClient {
         return HealthConnectClient.getOrCreate(context)
     }
-
 }
