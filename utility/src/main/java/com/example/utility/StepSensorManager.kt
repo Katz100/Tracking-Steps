@@ -4,6 +4,7 @@ import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.util.Log
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -15,6 +16,7 @@ class StepSensorManager @Inject constructor(
 ): DefaultLifecycleObserver {
     companion object {
         const val TAG = "StepSensorManager"
+        val requestPermissionsForSteps = ActivityResultContracts.RequestPermission()
     }
 
     private val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager

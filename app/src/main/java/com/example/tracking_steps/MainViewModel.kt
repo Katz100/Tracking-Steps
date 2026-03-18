@@ -1,6 +1,5 @@
 package com.example.tracking_steps
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +12,6 @@ class MainViewModel @Inject constructor(): ViewModel() {
     val stepsCounter: StateFlow<Int> = _stepsCounter
 
     fun increaseStepCounter() {
-        Log.i("Tag", "Increasing counter")
         _stepsCounter.value++
     }
 }

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import com.example.tracking_steps.ui.theme.TrackingStepsTheme
-import androidx.health.connect.client.PermissionController
 import androidx.health.connect.client.records.metadata.Device
 import com.example.feature_home.Home
 import com.example.utility.HealthConnectService
@@ -22,13 +21,11 @@ import java.time.ZoneOffset
 import javax.inject.Inject
 import androidx.health.connect.client.records.metadata.Metadata
 import androidx.lifecycle.lifecycleScope
-import com.example.utility.StepSensorListener
 import com.example.utility.StepSensorManager
 import kotlinx.coroutines.launch
 import android.Manifest
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -41,10 +38,7 @@ class MainActivity : ComponentActivity() {
 
     val viewModel: MainViewModel by viewModels()
 
-    val requestPermissionActivityContract = PermissionController.createRequestPermissionResultContract()
-    val requestPermissionResultContractsForActivity = ActivityResultContracts.RequestPermission()
-
-    val requestPermissions = registerForActivityResult(requestPermissionActivityContract) { granted ->
+    val requestPermissions = registerForActivityResult(HealthConnectService.requestPermissionsForHealthConnect) { granted ->
         if (granted.containsAll(HealthConnectService.PERMISSIONS)) {
             Log.i("MainActivity", "Permissions granted")
         } else {
@@ -52,7 +46,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private val activityRecognitionPermissionLauncher = registerForActivityResult(requestPermissionResultContractsForActivity) { granted ->
+    private val activityRecognitionPermissionLauncher = registerForActivityResult(StepSensorManager.requestPermissionsForSteps) { granted ->
             if (granted) {
                 stepSensorManager.registerListener(viewModel::increaseStepCounter) {}
             } else {
@@ -77,7 +71,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
 
-            val stepsCounter = viewModel.stepsCounter.collectAsState().value
+            val stepsCounter = viewModel.stepsCounter.collectAsStateWithLifecycle().value
 
             TrackingStepsTheme {
                 Scaffold(
