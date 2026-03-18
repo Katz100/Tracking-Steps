@@ -37,9 +37,6 @@ class MainActivity : ComponentActivity() {
     lateinit var writeStepsService: HealthConnectService
 
     @Inject
-    lateinit var stepSensorListener: StepSensorListener
-
-    @Inject
     lateinit var stepSensorManager: StepSensorManager
 
     val viewModel: MainViewModel by viewModels()
@@ -63,26 +60,20 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-    override fun onResume() {
-        super.onResume()
-        if (HealthConnectService.isActivityRecognitionGranted(this)) {
-            stepSensorManager.registerListener(viewModel::increaseStepCounter) {}
-        } else {
-            activityRecognitionPermissionLauncher.launch(
-                Manifest.permission.ACTIVITY_RECOGNITION
-            )
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        stepSensorManager.unregisterListener()
-    }
-
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        stepSensorManager.onRequestActivityRecognitionPermission = {
+            activityRecognitionPermissionLauncher.launch(
+                Manifest.permission.ACTIVITY_RECOGNITION
+            )
+        }
+
+        stepSensorManager.onActiveStepDetected = viewModel::increaseStepCounter
+
+        lifecycle.addObserver(stepSensorManager)
 
         setContent {
 
