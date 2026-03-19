@@ -2,6 +2,7 @@ package com.example.utility
 
 import android.content.Context
 import androidx.health.connect.client.HealthConnectClient
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
