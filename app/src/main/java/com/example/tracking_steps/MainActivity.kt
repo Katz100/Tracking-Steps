@@ -26,6 +26,7 @@ import kotlinx.coroutines.launch
 import android.Manifest
 import androidx.activity.viewModels
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -40,7 +41,7 @@ class MainActivity : ComponentActivity() {
 
     val requestPermissions = registerForActivityResult(HealthConnectService.requestPermissionsForHealthConnect) { granted ->
         if (granted.containsAll(HealthConnectService.PERMISSIONS)) {
-            Log.i("MainActivity", "Permissions granted")
+            Timber.i("Permission has been granted")
         } else {
             Log.i("MainActivity", "Permissions not granted")
         }
@@ -63,6 +64,9 @@ class MainActivity : ComponentActivity() {
             activityRecognitionPermissionLauncher.launch(
                 Manifest.permission.ACTIVITY_RECOGNITION
             )
+        }
+        stepSensorManager.onTotalStepCountChanged = {
+            viewModel.updateSteps(it)
         }
 
         stepSensorManager.onActiveStepDetected = viewModel::increaseStepCounter
@@ -102,6 +106,7 @@ class MainActivity : ComponentActivity() {
 
                                 val startTime = Instant.now().minusSeconds(3600)
                                 val endTime = Instant.now()
+                                Timber.d(endTime.toString())
 
                                 val startOffset = ZoneOffset.systemDefault().rules.getOffset(startTime)
                                 val endOffset = ZoneOffset.systemDefault().rules.getOffset(endTime)

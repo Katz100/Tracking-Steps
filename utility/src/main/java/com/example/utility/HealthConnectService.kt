@@ -7,10 +7,12 @@ import androidx.core.content.ContextCompat
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.PermissionController
 import androidx.health.connect.client.permission.HealthPermission
+import androidx.health.connect.client.records.ExerciseSessionRecord
 import androidx.health.connect.client.records.StepsRecord
 import androidx.health.connect.client.records.WeightRecord
 import androidx.health.connect.client.records.metadata.Metadata
 import androidx.health.connect.client.request.AggregateRequest
+import androidx.health.connect.client.request.ReadRecordsRequest
 import androidx.health.connect.client.response.InsertRecordsResponse
 import androidx.health.connect.client.time.TimeRangeFilter
 import androidx.health.connect.client.units.Mass
@@ -109,5 +111,14 @@ class HealthConnectService @Inject constructor(
         } catch (e: Exception) {
             null
         }
+    }
+
+    suspend fun readExerciseSessions(start: Instant, end: Instant): List<ExerciseSessionRecord> {
+        val request = ReadRecordsRequest(
+            recordType = ExerciseSessionRecord::class,
+            timeRangeFilter = TimeRangeFilter.between(start, end)
+        )
+        val response = healthConnectClient.readRecords(request)
+        return response.records
     }
 }

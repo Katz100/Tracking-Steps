@@ -19,7 +19,6 @@ class StepSensorListener @Inject constructor(): SensorEventListener {
     override fun onSensorChanged(event: SensorEvent?) {
         event?.let {
             if (it.sensor.type == Sensor.TYPE_STEP_DETECTOR) {
-                val stepDetected = it.values[0]
                 onActiveStepDetected()
             }
 
