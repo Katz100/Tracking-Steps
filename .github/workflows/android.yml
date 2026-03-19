@@ -83,7 +83,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test.html
-          path: app/build/reports/coverage/test/debug/index.html
+          path: app/build/reports/coverage/test/debug/
         
 
 
