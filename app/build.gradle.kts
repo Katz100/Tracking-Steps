@@ -75,15 +75,16 @@ dependencies {
     // health connect
     implementation("androidx.health:health-services-client:1.1.0-rc01")
     implementation("androidx.health.connect:connect-client:1.2.0-alpha02")
+
+    // details page
     implementation(project(":permissions-details"))
-    implementation(project(":home"))
-
-    // core
-
     // feature
-
+    implementation(project(":home"))
     // utility
     implementation(project(":utility"))
+
+    // timber
+    implementation ("com.jakewharton.timber:timber:5.0.1")
 }
 
 kapt {
