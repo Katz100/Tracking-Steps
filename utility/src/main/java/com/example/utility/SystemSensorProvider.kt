@@ -21,3 +21,13 @@ class SystemSensorProvider @Inject constructor(
         sensorManager.unregisterListener(listener)
     }
 }
+
+class SystemSensorProviderFake: SensorProvider {
+    override fun registerListener(listener: StepSensorListener) {
+        listener.onTotalStepCountChanged
+    }
+
+    override fun unregisterListener(listener: StepSensorListener) {
+
+    }
+}

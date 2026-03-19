@@ -11,3 +11,10 @@ class SystemActivityRecognitionChecker @Inject constructor(
         return HealthConnectService.isActivityRecognitionGranted(context)
     }
 }
+
+class SystemActivityRecognitionCheckerFake: ActivityRecognitionChecker {
+    var isGranted = true
+    override fun isActivityRecognitionGranted(): Boolean {
+        return isGranted
+    }
+}

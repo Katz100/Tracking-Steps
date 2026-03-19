@@ -62,6 +62,10 @@ dependencies {
 
     // timber
     implementation ("com.jakewharton.timber:timber:5.0.1")
+
+    // testing
+    testImplementation ("org.mockito:mockito-core:5.+")
+    testImplementation("io.mockk:mockk:1.13.10")
 }
 
 kapt {
