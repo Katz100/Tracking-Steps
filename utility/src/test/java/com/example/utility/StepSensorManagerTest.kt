@@ -4,6 +4,8 @@ import androidx.lifecycle.LifecycleOwner
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.junit.Assert.assertTrue
+import org.junit.Assert.assertFalse
 import org.mockito.junit.MockitoJUnitRunner
 import io.mockk.*
 
@@ -20,10 +22,10 @@ class StepSensorManagerTest {
     }
 
     @Test
-    fun `onResume() and recognition granted calls correct callback`() {
+    fun `onResume() and recognition granted sets listener`() {
         stepSensorManager.onResume(lifecycleOwner)
 
-        verify(exactly = 1) { listener.onTotalStepCountChanged }
+        assertTrue(systemSensorProviderFake.registeredListener == listener)
 
     }
 
@@ -55,5 +57,12 @@ class StepSensorManagerTest {
 
         verify { listener.onTotalStepCountChanged = callback2 }
         verify { listener.onActiveStepDetected = callback1 }
+    }
+
+    @Test
+    fun `Calling unRegister() unregisters listener`() {
+        stepSensorManager.unregisterListener()
+
+        assertTrue(systemSensorProviderFake.registeredListener == null)
     }
 }
