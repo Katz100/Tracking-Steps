@@ -70,6 +70,7 @@ dependencies {
     // testing
     testImplementation ("org.mockito:mockito-core:5.+")
     testImplementation("io.mockk:mockk:1.13.10")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
 }
 
 kapt {
