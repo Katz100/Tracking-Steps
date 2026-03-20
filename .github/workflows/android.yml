@@ -77,13 +77,15 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run tests
-        run: ./gradlew createDebugCoverageReport
+        run: ./gradlew test testDebugUnitTest --continue
 
       - name: Upload test report
         uses: actions/upload-artifact@v4
         with:
           name: test.html
-          path: app/build/reports/coverage/test/debug/
+          path: |
+                **/build/reports/tests/test*/**
+                **/build/test-results/test*/**
         
 
 
