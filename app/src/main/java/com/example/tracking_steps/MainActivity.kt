@@ -14,14 +14,14 @@ import androidx.compose.ui.Modifier
 import com.example.tracking_steps.ui.theme.TrackingStepsTheme
 import androidx.health.connect.client.records.metadata.Device
 import com.example.feature_home.Home
-import com.example.utility.HealthConnectService
+import com.example.utility.health_connect.HealthConnectService
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Instant
 import java.time.ZoneOffset
 import javax.inject.Inject
 import androidx.health.connect.client.records.metadata.Metadata
 import androidx.lifecycle.lifecycleScope
-import com.example.utility.StepSensorManager
+import com.example.utility.sensor.StepSensorManager
 import kotlinx.coroutines.launch
 import android.Manifest
 import androidx.activity.viewModels

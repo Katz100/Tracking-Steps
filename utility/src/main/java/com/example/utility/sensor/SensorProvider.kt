@@ -1,4 +1,6 @@
-package com.example.utility
+package com.example.utility.sensor
+
+import com.example.utility.sensor.StepSensorListener
 
 interface SensorProvider {
     fun registerListener(listener: StepSensorListener)

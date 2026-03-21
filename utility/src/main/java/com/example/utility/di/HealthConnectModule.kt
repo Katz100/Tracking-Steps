@@ -1,8 +1,7 @@
-package com.example.utility
+package com.example.utility.di
 
 import android.content.Context
 import androidx.health.connect.client.HealthConnectClient
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,6 +18,6 @@ object HealthConnectModule {
     fun provideHealthConnectClient(
         @ApplicationContext context: Context
     ): HealthConnectClient {
-        return HealthConnectClient.getOrCreate(context)
+        return HealthConnectClient.Companion.getOrCreate(context)
     }
 }

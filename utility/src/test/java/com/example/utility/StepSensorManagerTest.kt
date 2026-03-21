@@ -1,6 +1,10 @@
 package com.example.utility
 
 import androidx.lifecycle.LifecycleOwner
+import com.example.utility.activity_checker.SystemActivityRecognitionCheckerFake
+import com.example.utility.sensor.StepSensorListener
+import com.example.utility.sensor.StepSensorManager
+import com.example.utility.sensor.SystemSensorProviderFake
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -17,7 +21,8 @@ class StepSensorManagerTest {
     private lateinit var stepSensorManager: StepSensorManager
 
     @Before fun setUp(){
-        stepSensorManager = StepSensorManager(systemSensorProviderFake, activityRecognitionCheckerFake, listener)
+        stepSensorManager =
+            StepSensorManager(systemSensorProviderFake, activityRecognitionCheckerFake, listener)
     }
 
     @Test

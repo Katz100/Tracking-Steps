@@ -1,8 +1,9 @@
-package com.example.utility
+package com.example.utility.sensor
 
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.example.utility.activity_checker.ActivityRecognitionChecker
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -21,7 +22,7 @@ class StepSensorManager @Inject constructor(
 
     override fun onResume(owner: LifecycleOwner) {
         if (activityRecognitionChecker.isActivityRecognitionGranted()) {
-            Timber.i("Registering listener for steps")
+            Timber.Forest.i("Registering listener for steps")
             registerListener(
                 onActiveStepDetected,
                 onTotalStepCountChanged,
@@ -35,7 +36,7 @@ class StepSensorManager @Inject constructor(
 
     override fun onPause(owner: LifecycleOwner) {
         super.onPause(owner)
-        Timber.i("Unregistering listener for steps")
+        Timber.Forest.i("Unregistering listener for steps")
         unregisterListener()
     }
 

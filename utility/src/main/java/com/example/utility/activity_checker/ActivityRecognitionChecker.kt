@@ -1,4 +1,4 @@
-package com.example.utility
+package com.example.utility.activity_checker
 
 interface ActivityRecognitionChecker {
     fun isActivityRecognitionGranted(): Boolean

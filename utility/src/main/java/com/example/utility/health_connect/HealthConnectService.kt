@@ -1,4 +1,4 @@
-package com.example.utility
+package com.example.utility.health_connect
 
 import android.Manifest
 import android.content.Context
@@ -30,10 +30,10 @@ class HealthConnectService @Inject constructor(
 
         val PERMISSIONS =
             setOf(
-                HealthPermission.getReadPermission(StepsRecord::class),
-                HealthPermission.getWritePermission(StepsRecord::class),
-                HealthPermission.getReadPermission(WeightRecord::class),
-                HealthPermission.getWritePermission(WeightRecord::class),
+                HealthPermission.Companion.getReadPermission(StepsRecord::class),
+                HealthPermission.Companion.getWritePermission(StepsRecord::class),
+                HealthPermission.Companion.getReadPermission(WeightRecord::class),
+                HealthPermission.Companion.getWritePermission(WeightRecord::class),
             )
 
         fun isActivityRecognitionGranted(context: Context): Boolean {
@@ -43,7 +43,7 @@ class HealthConnectService @Inject constructor(
             ) == PackageManager.PERMISSION_GRANTED
         }
 
-        val requestPermissionsForHealthConnect = PermissionController.createRequestPermissionResultContract()
+        val requestPermissionsForHealthConnect = PermissionController.Companion.createRequestPermissionResultContract()
     }
 
     suspend fun hasAllPermissions(
@@ -85,12 +85,12 @@ class HealthConnectService @Inject constructor(
         return try {
             val response = healthConnectClient.aggregate(
                 AggregateRequest(
-                    metrics = setOf(StepsRecord.COUNT_TOTAL),
-                    timeRangeFilter = TimeRangeFilter.between(startTime, endTime)
+                    metrics = setOf(StepsRecord.Companion.COUNT_TOTAL),
+                    timeRangeFilter = TimeRangeFilter.Companion.between(startTime, endTime)
                 )
             )
             // The result may be null if no data is available in the time range
-            response[StepsRecord.COUNT_TOTAL]
+            response[StepsRecord.Companion.COUNT_TOTAL]
         } catch (e: Exception) {
             onError(e.message.toString())
             null
@@ -100,8 +100,8 @@ class HealthConnectService @Inject constructor(
     suspend fun writeWeightInput(weightInput: Double): InsertRecordsResponse? {
         val time = ZonedDateTime.now().withNano(0)
         val weightRecord = WeightRecord(
-            metadata = Metadata.manualEntry(),
-            weight = Mass.pounds(weightInput),
+            metadata = Metadata.Companion.manualEntry(),
+            weight = Mass.Companion.pounds(weightInput),
             time = time.toInstant(),
             zoneOffset = time.offset
         )
@@ -116,7 +116,7 @@ class HealthConnectService @Inject constructor(
     suspend fun readExerciseSessions(start: Instant, end: Instant): List<ExerciseSessionRecord> {
         val request = ReadRecordsRequest(
             recordType = ExerciseSessionRecord::class,
-            timeRangeFilter = TimeRangeFilter.between(start, end)
+            timeRangeFilter = TimeRangeFilter.Companion.between(start, end)
         )
         val response = healthConnectClient.readRecords(request)
         return response.records

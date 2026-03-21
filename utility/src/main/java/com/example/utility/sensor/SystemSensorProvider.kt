@@ -1,4 +1,4 @@
-package com.example.utility
+package com.example.utility.sensor
 
 import android.content.Context
 import android.hardware.Sensor

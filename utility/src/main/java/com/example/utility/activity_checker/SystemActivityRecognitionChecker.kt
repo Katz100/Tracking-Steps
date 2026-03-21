@@ -1,6 +1,7 @@
-package com.example.utility
+package com.example.utility.activity_checker
 
 import android.content.Context
+import com.example.utility.health_connect.HealthConnectService
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
