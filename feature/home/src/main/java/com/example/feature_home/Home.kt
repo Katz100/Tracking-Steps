@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.utility.composables.Circular
 
 @Composable
 fun Home(
@@ -17,6 +18,7 @@ fun Home(
     onRequestPermissions: () -> Unit,
     onWriteSteps: (Long) -> Unit,
     steps: Int,
+    goal: Int,
 ){
     Box(modifier = modifier
         .fillMaxSize(),
@@ -24,6 +26,11 @@ fun Home(
     ) {
         Column() {
             Text(steps.toString())
+
+            Circular(
+                steps,
+                goal
+            )
 
             Button(
                 modifier = Modifier.padding(bottom = 100.dp),

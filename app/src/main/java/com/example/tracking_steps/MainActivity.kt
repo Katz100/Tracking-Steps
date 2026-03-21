@@ -89,8 +89,10 @@ class MainActivity : ComponentActivity() {
                                 if (!writeStepsService.hasAllPermissions()) {
                                     requestPermissions.launch(HealthConnectService.PERMISSIONS)
                                 } else {
-                                    Toast.makeText(this@MainActivity, "Permissions already granted",
-                                        Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        this@MainActivity, "Permissions already granted",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                             }
                         },
@@ -108,7 +110,8 @@ class MainActivity : ComponentActivity() {
                                 val endTime = Instant.now()
                                 Timber.d(endTime.toString())
 
-                                val startOffset = ZoneOffset.systemDefault().rules.getOffset(startTime)
+                                val startOffset =
+                                    ZoneOffset.systemDefault().rules.getOffset(startTime)
                                 val endOffset = ZoneOffset.systemDefault().rules.getOffset(endTime)
 
                                 if (writeStepsService.hasAllPermissions()) {
@@ -120,12 +123,21 @@ class MainActivity : ComponentActivity() {
                                         metadata = metadata,
                                         countOfSteps = steps
                                     )
-                                    Toast.makeText(this@MainActivity, response?.recordIdsList.toString(), Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        this@MainActivity,
+                                        response?.recordIdsList.toString(),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 } else {
-                                    Toast.makeText(this@MainActivity, "Permission for steps must be granted", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        this@MainActivity,
+                                        "Permission for steps must be granted",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                             }
-                        }
+                        },
+                        goal = 50
                     )
                 }
             }
