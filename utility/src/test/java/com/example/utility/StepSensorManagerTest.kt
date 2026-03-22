@@ -27,7 +27,7 @@ class StepSensorManagerTest {
 
     @Test
     fun `onResume() and recognition granted sets listener`() {
-        stepSensorManager.onResume(lifecycleOwner)
+        stepSensorManager.registerListener()
 
         assertTrue(systemSensorProviderFake.registeredListener == listener)
 
@@ -37,7 +37,7 @@ class StepSensorManagerTest {
     fun `onResume() and recognition not granted does not call onActiveStep or onTotalStep`() {
         activityRecognitionCheckerFake.isGranted = false
 
-        stepSensorManager.onResume(lifecycleOwner)
+        stepSensorManager.registerListener()
 
         verify(exactly = 0) { listener.onTotalStepCountChanged }
     }
@@ -48,7 +48,7 @@ class StepSensorManagerTest {
         val callback = mockk<() -> Unit >(relaxed = true)
         stepSensorManager.onRequestActivityRecognitionPermission = callback
 
-        stepSensorManager.onResume(lifecycleOwner)
+        stepSensorManager.registerListener()
 
         verify(exactly = 1) { callback.invoke() }
     }
@@ -57,7 +57,9 @@ class StepSensorManagerTest {
     fun `registerListener correctly sets callbacks`() {
         val callback1 = mockk<() -> Unit>(relaxed = true)
         val callback2 = mockk<(Int) -> Unit>(relaxed = true)
-        stepSensorManager.registerListener(callback1, callback2)
+        stepSensorManager.onActiveStepDetected = callback1
+        stepSensorManager.onTotalStepCountChanged = callback2
+        stepSensorManager.registerListener()
 
         verify { listener.onTotalStepCountChanged = callback2 }
         verify { listener.onActiveStepDetected = callback1 }
