@@ -17,6 +17,8 @@ fun Home(
     modifier: Modifier = Modifier,
     onRequestPermissions: () -> Unit,
     onWriteSteps: (Long) -> Unit,
+    launchForeground: () -> Unit,
+    stopForeground: () -> Unit,
     steps: Int,
     goal: Int,
 ){
@@ -32,8 +34,15 @@ fun Home(
                 goal
             )
 
+            Button(onClick = launchForeground) {
+                Text("Launch foreground")
+            }
+
+            Button(onClick = stopForeground) {
+                Text("stop foreground")
+            }
             Button(
-                modifier = Modifier.padding(bottom = 100.dp),
+                modifier = Modifier.padding(bottom = 100.dp, top = 100.dp),
                 onClick = onRequestPermissions
             ) {
                 Text("Request permission")

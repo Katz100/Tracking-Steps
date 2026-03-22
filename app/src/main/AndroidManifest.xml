@@ -50,10 +50,15 @@
                 <category android:name="android.intent.category.HEALTH_PERMISSIONS" />
             </intent-filter>
         </activity-alias>
+
+        <service
+            android:name="com.example.utility.foreground.StepTrackingService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="health" />
     </application>
 
     <queries>
         <package android:name="com.google.android.apps.healthdata" />
     </queries>
-
 </manifest>

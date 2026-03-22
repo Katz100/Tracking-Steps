@@ -2,7 +2,6 @@ package com.example.tracking_steps
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -24,8 +23,10 @@ import androidx.lifecycle.lifecycleScope
 import com.example.utility.sensor.StepSensorManager
 import kotlinx.coroutines.launch
 import android.Manifest
+import android.content.Intent
 import androidx.activity.viewModels
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.utility.foreground.StepTrackingService
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -34,24 +35,21 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var writeStepsService: HealthConnectService
 
-    @Inject
-    lateinit var stepSensorManager: StepSensorManager
-
     val viewModel: MainViewModel by viewModels()
 
     val requestPermissions = registerForActivityResult(HealthConnectService.requestPermissionsForHealthConnect) { granted ->
         if (granted.containsAll(HealthConnectService.PERMISSIONS)) {
-            Timber.i("Permission has been granted")
+            Timber.i("Permission has been granted for Health Connect")
         } else {
-            Log.i("MainActivity", "Permissions not granted")
+            Timber.i("Permissions have been denied for Health Connect")
         }
     }
 
     private val activityRecognitionPermissionLauncher = registerForActivityResult(StepSensorManager.requestPermissionsForSteps) { granted ->
             if (granted) {
-                stepSensorManager.registerListener(viewModel::increaseStepCounter) {}
+                Timber.i("Permissions have been granted for step sensor")
             } else {
-                Log.i("MainActivity", "Permission denied")
+                Timber.i("Permissions have been denied for step sensor")
             }
         }
 
@@ -60,18 +58,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        stepSensorManager.onRequestActivityRecognitionPermission = {
-            activityRecognitionPermissionLauncher.launch(
-                Manifest.permission.ACTIVITY_RECOGNITION
-            )
-        }
-        stepSensorManager.onTotalStepCountChanged = {
-            viewModel.updateSteps(it)
-        }
-
-        stepSensorManager.onActiveStepDetected = viewModel::increaseStepCounter
-
-        lifecycle.addObserver(stepSensorManager)
+        activityRecognitionPermissionLauncher.launch(Manifest.permission.ACTIVITY_RECOGNITION)
 
         setContent {
 
@@ -137,7 +124,17 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
                         },
-                        goal = 50
+                        goal = 50,
+                        launchForeground = {
+                            val intent = Intent(this@MainActivity, StepTrackingService::class.java).apply {
+                                putExtra("steps", 50)
+                                putExtra("goal", 2400)
+                            }
+                            startForegroundService(intent)
+                        },
+                        stopForeground = {
+                            stopService(Intent(this@MainActivity, StepTrackingService::class.java))
+                        }
                     )
                 }
             }

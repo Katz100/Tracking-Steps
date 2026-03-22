@@ -11,7 +11,7 @@ class StepSensorManager @Inject constructor(
     private val sensorProvider: SensorProvider,
     private val activityRecognitionChecker: ActivityRecognitionChecker,
     private val stepSensorListener: StepSensorListener,
-): DefaultLifecycleObserver {
+) {
     companion object {
         val requestPermissionsForSteps = ActivityResultContracts.RequestPermission()
     }
@@ -20,36 +20,21 @@ class StepSensorManager @Inject constructor(
     var onTotalStepCountChanged: (Int) -> Unit = {}
     var onRequestActivityRecognitionPermission: () -> Unit = {}
 
-    override fun onResume(owner: LifecycleOwner) {
-        if (activityRecognitionChecker.isActivityRecognitionGranted()) {
-            Timber.Forest.i("Registering listener for steps")
-            registerListener(
-                onActiveStepDetected,
-                onTotalStepCountChanged,
-            )
-        } else {
-            onRequestActivityRecognitionPermission()
-        }
-        super.onResume(owner)
-
-    }
-
-    override fun onPause(owner: LifecycleOwner) {
-        super.onPause(owner)
-        Timber.Forest.i("Unregistering listener for steps")
-        unregisterListener()
-    }
-
-    fun registerListener(
-        onActiveStepDetected: () -> Unit,
-        onTotalStepCountChanged: (Int) -> Unit,
-    ) {
+    fun registerListener() {
         stepSensorListener.onTotalStepCountChanged = onTotalStepCountChanged
         stepSensorListener.onActiveStepDetected = onActiveStepDetected
-        sensorProvider.registerListener(stepSensorListener)
+
+        if (activityRecognitionChecker.isActivityRecognitionGranted()) {
+            sensorProvider.registerListener(stepSensorListener)
+            Timber.i("Permissions have been granted and sensor has been registered")
+        } else {
+            Timber.i("Attempted to register step sensor when permissions are not granted")
+            onRequestActivityRecognitionPermission()
+        }
     }
 
     fun unregisterListener() {
+        Timber.i("Unregistering listener for step sensor")
         sensorProvider.unregisterListener(stepSensorListener)
     }
 }
