@@ -23,6 +23,9 @@ import androidx.lifecycle.lifecycleScope
 import com.example.utility.sensor.StepSensorManager
 import kotlinx.coroutines.launch
 import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import androidx.activity.viewModels
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -58,6 +61,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+        createNotificationChannel(this)
         activityRecognitionPermissionLauncher.launch(Manifest.permission.ACTIVITY_RECOGNITION)
 
         setContent {
@@ -140,4 +144,17 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+}
+
+private fun createNotificationChannel(context: Context) {
+    // Create the NotificationChannel, but only on API 26+ because
+    // the NotificationChannel class is not in the Support Library.
+    val channel = NotificationChannel(
+        "steps",
+        "Steps",
+        NotificationManager.IMPORTANCE_LOW // not DEFAULT
+    ).apply { description = "Steps running in background" }
+    val manager = context.getSystemService(NotificationManager::class.java)
+    manager.createNotificationChannel(channel)
+
 }
