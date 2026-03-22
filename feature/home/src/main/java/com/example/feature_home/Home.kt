@@ -4,11 +4,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.utility.composables.Circular
 
@@ -20,8 +23,10 @@ fun Home(
     launchForeground: () -> Unit,
     stopForeground: () -> Unit,
     requestForeground: () -> Unit,
+    onGoalChange: (String) -> Unit,
     steps: Int,
     goal: Int,
+    goalValue: String,
 ){
     Box(modifier = modifier
         .fillMaxSize(),
@@ -38,6 +43,14 @@ fun Home(
             Button(onClick = requestForeground) {
                 Text("Request foreground")
             }
+
+            TextField(
+                value = goalValue,
+                onValueChange = {
+                    onGoalChange(it)
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            )
             Button(onClick = launchForeground) {
                 Text("Launch foreground")
             }

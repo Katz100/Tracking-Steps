@@ -22,7 +22,6 @@ import com.example.utility.sensor.StepSensorManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.time.Instant
 import javax.inject.Inject
@@ -95,20 +94,25 @@ class StepTrackingService: Service() {
     override fun onDestroy() {
         super.onDestroy()
         stepSensorManager.unregisterListener()
-        scope.launch {
-            Timber.i("Writing steps to Health Connect")
-            if (healthConnectService.hasAllPermissions()) {
-                healthConnectService.writeStepsData(
-                    startTime = startTime,
-                    endTime = Instant.now(),
-                    countOfSteps = currentSteps.toLong()
-                ) {
-                    Timber.e("There was an error writing steps to Health Connect: $it")
-                }
-            } else {
-                Timber.i("Unable to write steps to Health Connect due to correct permissions not being granted")
-            }
-        }
+        // Maybe should use work manager to write steps so duplicate sessions are not stored
+
+//        scope.launch {
+//            Timber.i("Writing steps to Health Connect")
+//            if (healthConnectService.hasAllPermissions()) {
+//                val recordResponse = healthConnectService.writeStepsData(
+//                    startTime = startTime,
+//                    endTime = Instant.now(),
+//                    countOfSteps = currentSteps.toLong()
+//                ) {
+//                    Timber.e("There was an error writing steps to Health Connect: $it")
+//                }
+//                if (recordResponse != null) {
+//                    Timber.i("Successfully wrote steps to Health Connect")
+//                }
+//            } else {
+//                Timber.i("Unable to write steps to Health Connect due to correct permissions not being granted")
+//            }
+//        }
     }
 
     override fun onBind(p0: Intent?): IBinder? {
@@ -132,6 +136,7 @@ class StepTrackingService: Service() {
         startTime = Instant.now()
         currentSteps = intent.getIntExtra("steps", 0)
         stepGoal = intent.getIntExtra("goal", 0)
+        StepCountProvider.updateCurrentGoal(stepGoal)
 
         try {
             val notification = NotificationCompat.Builder(this, CHANNEL_ID)
