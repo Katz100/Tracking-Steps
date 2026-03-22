@@ -19,6 +19,7 @@ fun Home(
     onWriteSteps: (Long) -> Unit,
     launchForeground: () -> Unit,
     stopForeground: () -> Unit,
+    requestForeground: () -> Unit,
     steps: Int,
     goal: Int,
 ){
@@ -34,6 +35,9 @@ fun Home(
                 goal
             )
 
+            Button(onClick = requestForeground) {
+                Text("Request foreground")
+            }
             Button(onClick = launchForeground) {
                 Text("Launch foreground")
             }
@@ -41,6 +45,7 @@ fun Home(
             Button(onClick = stopForeground) {
                 Text("stop foreground")
             }
+
             Button(
                 modifier = Modifier.padding(bottom = 100.dp, top = 100.dp),
                 onClick = onRequestPermissions

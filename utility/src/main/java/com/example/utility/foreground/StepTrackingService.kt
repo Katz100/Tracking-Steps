@@ -1,15 +1,21 @@
 package com.example.utility.foreground
 
+import android.Manifest
+import android.R
 import android.app.ForegroundServiceStartNotAllowedException
 import android.app.Service
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
 import androidx.annotation.RequiresApi
+import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.ServiceCompat
-import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.content.ContextCompat
 import com.example.utility.sensor.StepSensorManager
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -29,6 +35,7 @@ class StepTrackingService: Service() {
     var currentSteps = -1
     var stepGoal = -1
 
+    @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     override fun onCreate() {
         super.onCreate()
 
@@ -42,8 +49,13 @@ class StepTrackingService: Service() {
         }
 
         stepSensorManager.onTotalStepCountChanged = {
-            Timber.d("Step count changed: $it")
-            if (it > stepGoal) {
+            currentSteps++
+            updateNotification(
+                this,
+                currentSteps,
+                stepGoal
+            )
+            if (currentSteps >= stepGoal) {
                 Timber.i("Step goal has been met, ending service...")
                 stopSelf()
             }
@@ -61,14 +73,19 @@ class StepTrackingService: Service() {
 
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        currentSteps = intent?.getIntExtra("current", 0) ?: 0
-        stepGoal = intent?.getIntExtra("goal", 0) ?: 0
+        if (intent == null) {
+            Timber.i("Received intent is null so not continuing foreground service")
+            return START_STICKY
+        }
+
+        currentSteps = intent.getIntExtra("steps", 0)
+        stepGoal = intent.getIntExtra("goal", 0)
 
         try {
             val notification = NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Step tracking active")
                 .setContentText("Tracking steps...")
-                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setSmallIcon(R.drawable.ic_dialog_info)
                 .setOngoing(true)
                 .build()
 
@@ -80,9 +97,7 @@ class StepTrackingService: Service() {
             )
             stepSensorManager.registerListener()
         } catch (e: Exception) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
-                && e is ForegroundServiceStartNotAllowedException
-            ) {
+            if (e is ForegroundServiceStartNotAllowedException) {
                 Timber.e("Notification not available: $e")
                 // App not in a valid state to start foreground service
                 // (e.g. started from bg)
@@ -90,5 +105,27 @@ class StepTrackingService: Service() {
         }
 
         return START_STICKY
+    }
+
+    private fun updateNotification(
+        context: Context,
+        currentSteps: Int,
+        stepGoal: Int,
+    ) {
+        val notificationManager = NotificationManagerCompat.from(context)
+
+        if (ContextCompat.checkSelfPermission(
+                context, Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            val updatedNotification = NotificationCompat.Builder(context, CHANNEL_ID)
+                .setContentTitle("Steps")
+                .setSmallIcon(R.drawable.ic_dialog_info)
+                .setContentText("$currentSteps/$stepGoal steps completed")
+                .build()
+            notificationManager.notify(1, updatedNotification)
+        } else {
+            Timber.e("Unable to update notification due to permissions not being granted")
+        }
     }
 }

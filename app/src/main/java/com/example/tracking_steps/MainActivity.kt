@@ -61,11 +61,9 @@ class MainActivity : ComponentActivity() {
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
         if (isGranted) {
-            // Permission is granted. You can proceed with your foreground service logic.
-            //   startTimerService()
+            Timber.i("Permissions for notifications granted")
         } else {
-            // Permission denied. You should inform the user or handle the case gracefully.
-            Toast.makeText(this, "Notification permission denied.", Toast.LENGTH_SHORT).show()
+            Timber.i("Permissions for notification denied")
         }
     }
 
@@ -75,10 +73,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         createNotificationChannel(this)
-      //  activityRecognitionPermissionLauncher.launch(Manifest.permission.ACTIVITY_RECOGNITION)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-        }
+        activityRecognitionPermissionLauncher.launch(Manifest.permission.ACTIVITY_RECOGNITION)
 
         setContent {
 
@@ -148,13 +143,16 @@ class MainActivity : ComponentActivity() {
                         launchForeground = {
                             val intent = Intent(this@MainActivity, StepTrackingService::class.java).apply {
                                 putExtra("steps", 50)
-                                putExtra("goal", 2700)
+                                putExtra("goal", 60)
                             }
                             startForegroundService(intent)
                         },
                         stopForeground = {
                             stopService(Intent(this@MainActivity, StepTrackingService::class.java))
-                        }
+                        },
+                        requestForeground = {
+                            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        },
                     )
                 }
             }
@@ -172,5 +170,4 @@ private fun createNotificationChannel(context: Context) {
     ).apply { description = "Steps running in background" }
     val manager = context.getSystemService(NotificationManager::class.java)
     manager.createNotificationChannel(channel)
-
 }
