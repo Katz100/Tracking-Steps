@@ -39,28 +39,20 @@ class StepTrackingService: Service() {
     var currentSteps = -1
     var stepGoal = -1
 
-//    val stopReceiver = object : BroadcastReceiver() {
-//        override fun onReceive(context: Context?, intent: Intent?) {
-//            Timber.i("Received action to stop service")
-//            stopSelf()
-//        }
-//
-//    }
-
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     override fun onCreate() {
         super.onCreate()
 
-        val intent = Intent(this, StepTrackingService::class.java).apply {
+        val stopServiceIntent = Intent(this, StepTrackingService::class.java).apply {
             action = ACTION_STOP_SESSION
         }
 
-        val flag =
-            PendingIntent.FLAG_IMMUTABLE
+        val flag = PendingIntent.FLAG_IMMUTABLE
+
         pendingIntent = PendingIntent.getService(
             this,
             0,
-            intent,
+            stopServiceIntent,
             flag
         )
 
@@ -75,6 +67,7 @@ class StepTrackingService: Service() {
 
         stepSensorManager.onTotalStepCountChanged = {
             currentSteps++
+            StepCountProvider.updateCurrentSteps(currentSteps)
             updateNotification(
                 this,
                 currentSteps,
@@ -106,7 +99,7 @@ class StepTrackingService: Service() {
         }
 
         if (intent.action == ACTION_STOP_SESSION) {
-            Timber.i("User has ended session from notification")
+            Timber.i("User has ended session from notification, stopping service...")
             stopSelf()
             return START_STICKY
         }
@@ -119,7 +112,6 @@ class StepTrackingService: Service() {
                 .setContentTitle("Step tracking active")
                 .setContentText("Tracking steps...")
                 .setSmallIcon(R.drawable.ic_dialog_info)
-                .setOngoing(true)
                 .build()
 
             ServiceCompat.startForeground(

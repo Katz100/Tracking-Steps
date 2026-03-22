@@ -1,0 +1,13 @@
+package com.example.utility.foreground
+
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+
+object StepCountProvider {
+    private val _currentSteps = MutableStateFlow<Int>(0)
+    val currentSteps: StateFlow<Int> = _currentSteps
+
+    fun updateCurrentSteps(value: Int) {
+        _currentSteps.value = value
+    }
+}
