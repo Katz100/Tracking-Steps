@@ -27,6 +27,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.utility.foreground.StepTrackingService
@@ -56,13 +57,28 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            // Permission is granted. You can proceed with your foreground service logic.
+            //   startTimerService()
+        } else {
+            // Permission denied. You should inform the user or handle the case gracefully.
+            Toast.makeText(this, "Notification permission denied.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         createNotificationChannel(this)
-        activityRecognitionPermissionLauncher.launch(Manifest.permission.ACTIVITY_RECOGNITION)
+      //  activityRecognitionPermissionLauncher.launch(Manifest.permission.ACTIVITY_RECOGNITION)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
 
         setContent {
 
@@ -132,7 +148,7 @@ class MainActivity : ComponentActivity() {
                         launchForeground = {
                             val intent = Intent(this@MainActivity, StepTrackingService::class.java).apply {
                                 putExtra("steps", 50)
-                                putExtra("goal", 2400)
+                                putExtra("goal", 2700)
                             }
                             startForegroundService(intent)
                         },

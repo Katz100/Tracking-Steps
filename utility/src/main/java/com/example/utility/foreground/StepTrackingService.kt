@@ -83,6 +83,7 @@ class StepTrackingService: Service() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
                 && e is ForegroundServiceStartNotAllowedException
             ) {
+                Timber.e("Notification not available: $e")
                 // App not in a valid state to start foreground service
                 // (e.g. started from bg)
             }
