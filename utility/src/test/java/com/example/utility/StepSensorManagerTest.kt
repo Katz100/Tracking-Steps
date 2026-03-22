@@ -1,6 +1,5 @@
 package com.example.utility
 
-import androidx.lifecycle.LifecycleOwner
 import com.example.utility.activity_checker.SystemActivityRecognitionCheckerFake
 import com.example.utility.sensor.StepSensorListener
 import com.example.utility.sensor.StepSensorManager
@@ -17,7 +16,6 @@ class StepSensorManagerTest {
     private val systemSensorProviderFake = SystemSensorProviderFake()
     private val activityRecognitionCheckerFake = SystemActivityRecognitionCheckerFake()
     private val listener = mockk<StepSensorListener>(relaxed = true)
-    private val lifecycleOwner = mockk<LifecycleOwner>(relaxed = true)
     private lateinit var stepSensorManager: StepSensorManager
 
     @Before fun setUp(){
@@ -26,7 +24,7 @@ class StepSensorManagerTest {
     }
 
     @Test
-    fun `onResume() and recognition granted sets listener`() {
+    fun `registerListener() and recognition granted sets listener`() {
         stepSensorManager.registerListener()
 
         assertTrue(systemSensorProviderFake.registeredListener == listener)
@@ -34,7 +32,7 @@ class StepSensorManagerTest {
     }
 
     @Test
-    fun `onResume() and recognition not granted does not call onActiveStep or onTotalStep`() {
+    fun `registerListener() and recognition not granted does not call onActiveStep or onTotalStep`() {
         activityRecognitionCheckerFake.isGranted = false
 
         stepSensorManager.registerListener()
@@ -43,7 +41,7 @@ class StepSensorManagerTest {
     }
 
     @Test
-    fun `onResume() calls onRequestActivityRecognitionPermission when permissions are not granted`() {
+    fun `registerListener() calls onRequestActivityRecognitionPermission when permissions are not granted`() {
         activityRecognitionCheckerFake.isGranted = false
         val callback = mockk<() -> Unit >(relaxed = true)
         stepSensorManager.onRequestActivityRecognitionPermission = callback
