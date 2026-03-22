@@ -3,8 +3,8 @@ package com.example.utility.foreground
 import android.Manifest
 import android.R
 import android.app.ForegroundServiceStartNotAllowedException
+import android.app.PendingIntent
 import android.app.Service
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -28,24 +28,41 @@ class StepTrackingService: Service() {
     private companion object {
         const val CHANNEL_ID = "steps"
         const val NOTIFICATION_ID = 100
+        const val ACTION_STOP_SESSION = "com.example.utility.foreground.ACTION_STOP_SESSION"
     }
 
     @Inject
     lateinit var stepSensorManager: StepSensorManager
 
+    lateinit var pendingIntent: PendingIntent
+
     var currentSteps = -1
     var stepGoal = -1
 
-    val receiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            TODO("Not yet implemented")
-        }
-
-    }
+//    val stopReceiver = object : BroadcastReceiver() {
+//        override fun onReceive(context: Context?, intent: Intent?) {
+//            Timber.i("Received action to stop service")
+//            stopSelf()
+//        }
+//
+//    }
 
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     override fun onCreate() {
         super.onCreate()
+
+        val intent = Intent(this, StepTrackingService::class.java).apply {
+            action = ACTION_STOP_SESSION
+        }
+
+        val flag =
+            PendingIntent.FLAG_IMMUTABLE
+        pendingIntent = PendingIntent.getService(
+            this,
+            0,
+            intent,
+            flag
+        )
 
         stepSensorManager.onActiveStepDetected = {
             Timber.i("Active step detected")
@@ -61,7 +78,8 @@ class StepTrackingService: Service() {
             updateNotification(
                 this,
                 currentSteps,
-                stepGoal
+                stepGoal,
+                pendingIntent,
             )
             if (currentSteps >= stepGoal) {
                 Timber.i("Step goal has been met, ending service...")
@@ -81,8 +99,15 @@ class StepTrackingService: Service() {
 
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+
         if (intent == null) {
             Timber.i("Received intent is null so not continuing foreground service")
+            return START_STICKY
+        }
+
+        if (intent.action == ACTION_STOP_SESSION) {
+            Timber.i("User has ended session from notification")
+            stopSelf()
             return START_STICKY
         }
 
@@ -120,6 +145,7 @@ class StepTrackingService: Service() {
         context: Context,
         currentSteps: Int,
         stepGoal: Int,
+        pendingIntent: PendingIntent,
     ) {
         val notificationManager = NotificationManagerCompat.from(context)
 
@@ -131,8 +157,9 @@ class StepTrackingService: Service() {
                 .setContentTitle("Steps")
                 .setSmallIcon(R.drawable.ic_dialog_info)
                 .setContentText("$currentSteps/$stepGoal steps completed")
+                .addAction(0, "Stop Session", pendingIntent)
                 .build()
-            notificationManager.notify(1, updatedNotification)
+            notificationManager.notify(NOTIFICATION_ID, updatedNotification)
         } else {
             Timber.e("Unable to update notification due to permissions not being granted")
         }
