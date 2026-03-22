@@ -10,6 +10,7 @@ import androidx.health.connect.client.permission.HealthPermission
 import androidx.health.connect.client.records.ExerciseSessionRecord
 import androidx.health.connect.client.records.StepsRecord
 import androidx.health.connect.client.records.WeightRecord
+import androidx.health.connect.client.records.metadata.Device
 import androidx.health.connect.client.records.metadata.Metadata
 import androidx.health.connect.client.request.AggregateRequest
 import androidx.health.connect.client.request.ReadRecordsRequest
@@ -55,9 +56,11 @@ class HealthConnectService @Inject constructor(
     suspend fun writeStepsData(
         startTime: Instant,
         endTime: Instant,
-        startZoneOffset: ZoneOffset,
-        endZoneOffset: ZoneOffset,
-        metadata: Metadata,
+        startZoneOffset: ZoneOffset = ZoneOffset.UTC,
+        endZoneOffset: ZoneOffset = ZoneOffset.UTC,
+        metadata: Metadata = Metadata.autoRecorded(
+            device = Device(type = Device.TYPE_PHONE)
+        ),
         countOfSteps: Long,
         onError: (String) -> Unit = {}
     ): InsertRecordsResponse? {

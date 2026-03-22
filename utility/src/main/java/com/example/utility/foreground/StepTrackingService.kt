@@ -17,9 +17,14 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
+import com.example.utility.health_connect.HealthConnectService
 import com.example.utility.sensor.StepSensorManager
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.time.Instant
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -34,7 +39,13 @@ class StepTrackingService: Service() {
     @Inject
     lateinit var stepSensorManager: StepSensorManager
 
+    @Inject
+    lateinit var healthConnectService: HealthConnectService
+
+    private val scope = CoroutineScope(Dispatchers.IO)
+
     lateinit var pendingIntent: PendingIntent
+    lateinit var startTime: Instant
 
     var currentSteps = -1
     var stepGoal = -1
@@ -84,6 +95,20 @@ class StepTrackingService: Service() {
     override fun onDestroy() {
         super.onDestroy()
         stepSensorManager.unregisterListener()
+        scope.launch {
+            Timber.i("Writing steps to Health Connect")
+            if (healthConnectService.hasAllPermissions()) {
+                healthConnectService.writeStepsData(
+                    startTime = startTime,
+                    endTime = Instant.now(),
+                    countOfSteps = currentSteps.toLong()
+                ) {
+                    Timber.e("There was an error writing steps to Health Connect: $it")
+                }
+            } else {
+                Timber.i("Unable to write steps to Health Connect due to correct permissions not being granted")
+            }
+        }
     }
 
     override fun onBind(p0: Intent?): IBinder? {
@@ -104,6 +129,7 @@ class StepTrackingService: Service() {
             return START_STICKY
         }
 
+        startTime = Instant.now()
         currentSteps = intent.getIntExtra("steps", 0)
         stepGoal = intent.getIntExtra("goal", 0)
 
