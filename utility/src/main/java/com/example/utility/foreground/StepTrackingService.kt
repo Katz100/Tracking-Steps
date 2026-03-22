@@ -4,6 +4,7 @@ import android.Manifest
 import android.R
 import android.app.ForegroundServiceStartNotAllowedException
 import android.app.Service
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -34,6 +35,13 @@ class StepTrackingService: Service() {
 
     var currentSteps = -1
     var stepGoal = -1
+
+    val receiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            TODO("Not yet implemented")
+        }
+
+    }
 
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     override fun onCreate() {
@@ -107,6 +115,7 @@ class StepTrackingService: Service() {
         return START_STICKY
     }
 
+    @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     private fun updateNotification(
         context: Context,
         currentSteps: Int,
