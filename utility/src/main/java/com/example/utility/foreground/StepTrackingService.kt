@@ -85,9 +85,17 @@ class StepTrackingService : Service() {
         stepSensorManager.onTotalStepCountChanged = {
             currentSteps++
             StepCountProvider.updateCurrentSteps(currentSteps)
+
             notificationLayoutExpanded.setTextViewText(
                 R.id.steps_counter,
                 "${currentSteps}/${stepGoal}"
+            )
+
+            notificationLayoutExpanded.setProgressBar(
+                R.id.progress_indicator,
+                stepGoal,
+                currentSteps,
+                false
             )
             updateNotification(
                 this,
