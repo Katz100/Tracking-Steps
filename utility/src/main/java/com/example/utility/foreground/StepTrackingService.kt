@@ -1,7 +1,7 @@
 package com.example.utility.foreground
 
 import android.Manifest
-import android.R
+import com.example.utility.R
 import android.app.ForegroundServiceStartNotAllowedException
 import android.app.PendingIntent
 import android.app.Service
@@ -11,6 +11,7 @@ import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
+import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationCompat
@@ -142,7 +143,7 @@ class StepTrackingService: Service() {
             val notification = NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Step tracking active")
                 .setContentText("Tracking steps...")
-                .setSmallIcon(R.drawable.ic_dialog_info)
+                .setSmallIcon(R.drawable.ic_launcher_background)
                 .build()
 
             ServiceCompat.startForeground(
@@ -171,6 +172,8 @@ class StepTrackingService: Service() {
         pendingIntent: PendingIntent,
     ) {
         val notificationManager = NotificationManagerCompat.from(context)
+        val notificationLayout = RemoteViews(packageName, R.layout.small)
+        val notificationLayoutExpanded = RemoteViews(packageName, R.layout.large)
 
         if (ContextCompat.checkSelfPermission(
                 context, Manifest.permission.POST_NOTIFICATIONS
@@ -178,7 +181,10 @@ class StepTrackingService: Service() {
         ) {
             val updatedNotification = NotificationCompat.Builder(context, CHANNEL_ID)
                 .setContentTitle("Steps")
-                .setSmallIcon(R.drawable.ic_dialog_info)
+                .setSmallIcon(R.drawable.ic_launcher_background)
+                .setStyle(NotificationCompat.DecoratedCustomViewStyle())
+                .setCustomContentView(notificationLayout)
+                .setCustomBigContentView(notificationLayoutExpanded)
                 .setContentText("$currentSteps/$stepGoal steps completed")
                 .addAction(0, "Stop Session", pendingIntent)
                 .build()
