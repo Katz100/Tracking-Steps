@@ -21,8 +21,6 @@ import androidx.core.content.ContextCompat
 import com.example.utility.health_connect.HealthConnectService
 import com.example.utility.sensor.StepSensorManager
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import timber.log.Timber
 import java.time.Instant
 import javax.inject.Inject
@@ -42,11 +40,8 @@ class StepTrackingService : Service() {
     @Inject
     lateinit var healthConnectService: HealthConnectService
 
-    private val scope = CoroutineScope(Dispatchers.IO)
-
     lateinit var pendingIntent: PendingIntent
     lateinit var startTime: Instant
-
     lateinit var notificationLayout: RemoteViews
     lateinit var notificationLayoutExpanded: RemoteViews
 
@@ -99,8 +94,6 @@ class StepTrackingService : Service() {
             )
             updateNotification(
                 this,
-                currentSteps,
-                stepGoal,
                 pendingIntent,
             )
             if (currentSteps >= stepGoal) {
@@ -113,7 +106,7 @@ class StepTrackingService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         stepSensorManager.unregisterListener()
-        // Maybe should use work manager to write steps so duplicate sessions are not stored
+        /* Maybe should use work manager to write steps/or uncomment below to just write steps for sessions */
 
 //        scope.launch {
 //            Timber.i("Writing steps to Health Connect")
@@ -185,8 +178,6 @@ class StepTrackingService : Service() {
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     private fun updateNotification(
         context: Context,
-        currentSteps: Int,
-        stepGoal: Int,
         pendingIntent: PendingIntent,
     ) {
         val notificationManager = NotificationManagerCompat.from(context)
@@ -201,8 +192,7 @@ class StepTrackingService : Service() {
                 .setStyle(NotificationCompat.DecoratedCustomViewStyle())
                 .setCustomContentView(notificationLayout)
                 .setCustomBigContentView(notificationLayoutExpanded)
-                .setContentText("$currentSteps/$stepGoal steps completed")
-                .addAction(0, "Stop Session", pendingIntent)
+                .addAction(0, "End Session", pendingIntent)
                 .build()
             notificationManager.notify(NOTIFICATION_ID, updatedNotification)
         } else {

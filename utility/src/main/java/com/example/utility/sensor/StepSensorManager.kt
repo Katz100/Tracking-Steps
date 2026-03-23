@@ -1,8 +1,6 @@
 package com.example.utility.sensor
 
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import com.example.utility.activity_checker.ActivityRecognitionChecker
 import timber.log.Timber
 import javax.inject.Inject

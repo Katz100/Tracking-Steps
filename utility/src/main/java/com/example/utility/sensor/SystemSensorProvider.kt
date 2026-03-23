@@ -35,8 +35,4 @@ class SystemSensorProviderFake: SensorProvider {
             registeredListener = null
         }
     }
-
-    fun emitStepCount(totalSteps: Int) {
-        registeredListener?.onTotalStepCountChanged(totalSteps)
-    }
 }

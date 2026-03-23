@@ -27,8 +27,6 @@ class HealthConnectService @Inject constructor(
 ) {
 
     companion object {
-        const val TAG = "HealthConnectService"
-
         val PERMISSIONS =
             setOf(
                 HealthPermission.Companion.getReadPermission(StepsRecord::class),

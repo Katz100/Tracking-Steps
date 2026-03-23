@@ -10,10 +10,6 @@ class StepSensorListener @Inject constructor(): SensorEventListener {
     var onActiveStepDetected: () -> Unit = {}
     var onTotalStepCountChanged: (Int) -> Unit = {}
 
-    companion object {
-        const val TAG = "StepSensorListener"
-    }
-
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) = Unit
 
     override fun onSensorChanged(event: SensorEvent?) {
