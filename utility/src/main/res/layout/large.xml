@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="300dp"
+    android:layout_height="100dp"
     android:orientation="vertical">
 
     <TextView
@@ -13,7 +13,7 @@
         android:text="Large notification, showing a title and a body." />
 
     <TextView
-        android:id="@+id/notification_body"
+        android:id="@+id/steps_counter"
         style="@style/TextAppearance.Compat.Notification.Line2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

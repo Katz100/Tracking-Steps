@@ -28,7 +28,7 @@ import java.time.Instant
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class StepTrackingService: Service() {
+class StepTrackingService : Service() {
 
     private companion object {
         const val CHANNEL_ID = "steps"
@@ -47,12 +47,18 @@ class StepTrackingService: Service() {
     lateinit var pendingIntent: PendingIntent
     lateinit var startTime: Instant
 
+    lateinit var notificationLayout: RemoteViews
+    lateinit var notificationLayoutExpanded: RemoteViews
+
     var currentSteps = -1
     var stepGoal = -1
 
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     override fun onCreate() {
         super.onCreate()
+
+        notificationLayout = RemoteViews(packageName, R.layout.small)
+        notificationLayoutExpanded = RemoteViews(packageName, R.layout.large)
 
         val stopServiceIntent = Intent(this, StepTrackingService::class.java).apply {
             action = ACTION_STOP_SESSION
@@ -79,6 +85,10 @@ class StepTrackingService: Service() {
         stepSensorManager.onTotalStepCountChanged = {
             currentSteps++
             StepCountProvider.updateCurrentSteps(currentSteps)
+            notificationLayoutExpanded.setTextViewText(
+                R.id.steps_counter,
+                "${currentSteps}/${stepGoal}"
+            )
             updateNotification(
                 this,
                 currentSteps,
@@ -172,8 +182,6 @@ class StepTrackingService: Service() {
         pendingIntent: PendingIntent,
     ) {
         val notificationManager = NotificationManagerCompat.from(context)
-        val notificationLayout = RemoteViews(packageName, R.layout.small)
-        val notificationLayoutExpanded = RemoteViews(packageName, R.layout.large)
 
         if (ContextCompat.checkSelfPermission(
                 context, Manifest.permission.POST_NOTIFICATIONS
