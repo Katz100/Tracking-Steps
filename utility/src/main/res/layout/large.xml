@@ -10,21 +10,37 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Large notification, showing a title and a body." />
+        android:text="Tracking Steps For Session" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
     <ProgressBar
         android:id="@+id/progress_indicator"
         style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:indeterminate="false"
         android:max="100"
-        android:progress="30"/>
+        android:progress="50"
+        android:progressDrawable="@drawable/circular"
+        android:secondaryProgress="100"
+        />
 
     <TextView
         android:id="@+id/steps_counter"
         style="@style/TextAppearance.Compat.Notification.Line2"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="This is the body. The height is manually forced to 300dp." />
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="This is the body. The height is manually forced to 300dp."
+        />
+
+    </LinearLayout>
+
 </LinearLayout>
