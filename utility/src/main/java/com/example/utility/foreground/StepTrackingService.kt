@@ -18,12 +18,10 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
-import androidx.health.connect.client.units.calories
 import com.example.utility.health_connect.HealthConnectService
 import com.example.utility.sensor.StepSensorManager
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import java.math.BigDecimal
 import java.time.Instant
 import javax.inject.Inject
 import kotlin.math.roundToInt
