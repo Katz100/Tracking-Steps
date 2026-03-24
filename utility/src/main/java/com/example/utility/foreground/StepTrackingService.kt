@@ -18,12 +18,15 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
+import androidx.health.connect.client.units.calories
 import com.example.utility.health_connect.HealthConnectService
 import com.example.utility.sensor.StepSensorManager
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import java.math.BigDecimal
 import java.time.Instant
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class StepTrackingService : Service() {
@@ -32,6 +35,7 @@ class StepTrackingService : Service() {
         const val CHANNEL_ID = "steps"
         const val NOTIFICATION_ID = 100
         const val ACTION_STOP_SESSION = "com.example.utility.foreground.ACTION_STOP_SESSION"
+        const val CALORIES_CONSTANT = 0.00023
     }
 
     @Inject
@@ -47,6 +51,7 @@ class StepTrackingService : Service() {
 
     var currentSteps = -1
     var stepGoal = -1
+    var weight = -1
 
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     override fun onCreate() {
@@ -83,7 +88,7 @@ class StepTrackingService : Service() {
 
             notificationLayoutExpanded.setTextViewText(
                 R.id.steps_counter,
-                "${currentSteps}/${stepGoal}"
+                "$currentSteps Steps"
             )
 
             notificationLayoutExpanded.setProgressBar(
@@ -91,6 +96,13 @@ class StepTrackingService : Service() {
                 stepGoal,
                 currentSteps,
                 false
+            )
+
+            val caloriesBurned = (currentSteps * weight * CALORIES_CONSTANT).roundToInt()
+
+            notificationLayoutExpanded.setTextViewText(
+                R.id.calories_burned_text,
+                caloriesBurned.toString()
             )
             updateNotification(
                 this,
@@ -148,6 +160,8 @@ class StepTrackingService : Service() {
         startTime = Instant.now()
         currentSteps = intent.getIntExtra("steps", 0)
         stepGoal = intent.getIntExtra("goal", 0)
+        weight = intent.getIntExtra("weight", 0)
+
         StepCountProvider.updateCurrentGoal(stepGoal)
 
         try {

@@ -15,6 +15,13 @@ class MainViewModel @Inject constructor(): ViewModel() {
      private val _goal = MutableStateFlow<String>("")
      val goal: StateFlow<String> = _goal
 
+     private val _weightTxt = MutableStateFlow<String>("")
+     val weightTxt: StateFlow<String> = _weightTxt
+
+     fun onWeightChange(value: String) {
+          _weightTxt.value = value
+     }
+
      fun onGoalChange(value: String) {
           _goal.value = value
      }

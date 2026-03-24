@@ -27,6 +27,8 @@ fun Home(
     steps: Int,
     goal: Int,
     goalValue: String,
+    weightValue: String,
+    onWeightChange: (String) -> Unit,
 ){
     Box(modifier = modifier
         .fillMaxSize(),
@@ -43,6 +45,17 @@ fun Home(
             Button(onClick = requestForeground) {
                 Text("Request foreground")
             }
+
+            TextField(
+                value = weightValue,
+                onValueChange = {
+                    onWeightChange(it)
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                placeholder = {
+                    Text("Enter weight")
+                }
+            )
 
             TextField(
                 value = goalValue,

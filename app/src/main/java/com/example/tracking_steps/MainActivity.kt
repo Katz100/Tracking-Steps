@@ -80,6 +80,7 @@ class MainActivity : ComponentActivity() {
             val stepsCounter = viewModel.stepsCounter.collectAsStateWithLifecycle().value
             val goal = viewModel.goal.collectAsStateWithLifecycle().value
             val currentGoal = viewModel.currentGoal.collectAsStateWithLifecycle().value
+            val weightTxt = viewModel.weightTxt.collectAsStateWithLifecycle().value
 
             TrackingStepsTheme {
                 Scaffold(
@@ -146,6 +147,7 @@ class MainActivity : ComponentActivity() {
                             val intent = Intent(this@MainActivity, StepTrackingService::class.java).apply {
                                 putExtra("steps", 0)
                                 putExtra("goal", goal.toIntOrNull() ?: 100)
+                                putExtra("weight", weightTxt.toIntOrNull() ?: 180)
                             }
                             startForegroundService(intent)
                         },
@@ -156,7 +158,9 @@ class MainActivity : ComponentActivity() {
                             requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                         },
                         onGoalChange = { viewModel.onGoalChange(it) },
-                        goalValue = goal
+                        goalValue = goal,
+                        weightValue = weightTxt,
+                        onWeightChange = { viewModel.onWeightChange(it) }
                     )
                 }
             }

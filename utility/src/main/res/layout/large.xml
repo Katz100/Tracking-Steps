@@ -30,17 +30,57 @@
         android:secondaryProgress="100"
         />
 
-    <TextView
-        android:id="@+id/steps_counter"
-        style="@style/TextAppearance.Compat.Notification.Line2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:text="This is the body. The height is manually forced to 300dp."
-        />
+        <LinearLayout
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/steps_counter"
+                style="@style/TextAppearance.Compat.Notification.Line2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="100 Steps"
+                android:textAlignment="center"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="6dp"
+                />
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:contentDescription="step"
+                android:src="@drawable/walking" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/calories_burned_text"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="186"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="6dp"
+                />
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/calories"
+                android:contentDescription="calories"/>
+
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>
