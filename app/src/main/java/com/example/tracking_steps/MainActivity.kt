@@ -29,8 +29,11 @@ import android.content.Context
 import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.utility.foreground.StepTrackingService
+import kotlinx.coroutines.coroutineScope
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -38,6 +41,9 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var writeStepsService: HealthConnectService
+
+    @Inject
+    lateinit var dataStore: DataStore
 
     val viewModel: MainViewModel by viewModels()
 
@@ -81,6 +87,12 @@ class MainActivity : ComponentActivity() {
             val goal = viewModel.goal.collectAsStateWithLifecycle().value
             val currentGoal = viewModel.currentGoal.collectAsStateWithLifecycle().value
             val weightTxt = viewModel.weightTxt.collectAsStateWithLifecycle().value
+
+            LaunchedEffect(Unit) {
+                dataStore.weightFlow().collect {
+                    Timber.i("Collecting ${it.toString()}")
+                }
+            }
 
             TrackingStepsTheme {
                 Scaffold(
@@ -148,6 +160,9 @@ class MainActivity : ComponentActivity() {
                                 putExtra("steps", 0)
                                 putExtra("goal", goal.toIntOrNull() ?: 100)
                                 putExtra("weight", weightTxt.toIntOrNull() ?: 180)
+                            }
+                            lifecycleScope.launch {
+                                dataStore.setNewWeight(weightTxt.toIntOrNull() ?: 180)
                             }
                             startForegroundService(intent)
                         },
