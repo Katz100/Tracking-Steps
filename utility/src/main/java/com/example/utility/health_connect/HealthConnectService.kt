@@ -35,8 +35,8 @@ class HealthConnectService @Inject constructor(
                 HealthPermission.Companion.getWritePermission(StepsRecord::class),
                 HealthPermission.Companion.getReadPermission(WeightRecord::class),
                 HealthPermission.Companion.getWritePermission(WeightRecord::class),
-                HealthPermission.getReadPermission(TotalCaloriesBurnedRecord::class),
-                HealthPermission.getWritePermission(TotalCaloriesBurnedRecord::class),
+                HealthPermission.Companion.getReadPermission(TotalCaloriesBurnedRecord::class),
+                HealthPermission.Companion.getWritePermission(TotalCaloriesBurnedRecord::class),
             )
 
         fun isActivityRecognitionGranted(context: Context): Boolean {

@@ -30,10 +30,8 @@ import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.utility.foreground.StepTrackingService
-import kotlinx.coroutines.coroutineScope
 import timber.log.Timber
 
 @AndroidEntryPoint
