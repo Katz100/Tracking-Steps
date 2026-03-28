@@ -15,9 +15,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
-     @ApplicationContext context: Context
-): ViewModel() {
+class MainViewModel @Inject constructor(): ViewModel() {
      val stepsCounter = StepCountProvider.currentSteps
      val currentGoal = StepCountProvider.currentGoal
 
@@ -35,14 +33,4 @@ class MainViewModel @Inject constructor(
           _goal.value = value
      }
 
-     var onSessionCompleted: (Int) -> Unit = {}
-
-     init {
-         viewModelScope.launch {
-              StepCountProvider.completionFlow.collect {
-                   Timber.i(it.toString())
-                   onSessionCompleted(it.steps)
-              }
-         }
-     }
 }

@@ -77,18 +77,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        viewModel.onSessionCompleted = {
-            val sendIntent: Intent = Intent().apply {
-                action = Intent.ACTION_SEND
-                putExtra(Intent.EXTRA_TEXT, "I completed $it steps!")
-                type = "text/plain"
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            }
-
-            val shareIntent = Intent.createChooser(sendIntent, null)
-            startActivity(shareIntent)
-        }
-
         createNotificationChannel(this)
         activityRecognitionPermissionLauncher.launch(Manifest.permission.ACTIVITY_RECOGNITION)
 
