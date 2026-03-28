@@ -25,4 +25,5 @@ class MainViewModel @Inject constructor(): ViewModel() {
      fun onGoalChange(value: String) {
           _goal.value = value
      }
+
 }

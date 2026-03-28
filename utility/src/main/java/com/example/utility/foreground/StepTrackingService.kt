@@ -29,7 +29,7 @@ import kotlin.math.roundToInt
 @AndroidEntryPoint
 class StepTrackingService : Service() {
 
-    private companion object {
+     companion object {
         const val CHANNEL_ID = "steps"
         const val NOTIFICATION_ID = 100
         const val ACTION_STOP_SESSION = "com.example.utility.foreground.ACTION_STOP_SESSION"
@@ -134,7 +134,8 @@ class StepTrackingService : Service() {
                     updateNotification(this)
                     if (currentSteps >= stepGoal) {
                         Timber.i("Step goal has been met, ending service...")
-                        stopSelf()
+                        sessionState = SessionState.END
+                        createShareStepsNotification(this, currentSteps)
                     }
                 }
                 SessionState.PAUSE -> {
@@ -206,6 +207,7 @@ class StepTrackingService : Service() {
             return START_STICKY
         }
 
+        sessionState = SessionState.RESUME
         startTime = Instant.now()
         currentSteps = intent.getIntExtra("steps", 0)
         stepGoal = intent.getIntExtra("goal", 0)
@@ -238,6 +240,40 @@ class StepTrackingService : Service() {
         return START_STICKY
     }
 
+    @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
+    private fun createShareStepsNotification(
+        context: Context,
+        stepsCompleted: Int,
+    ) {
+        val notificationManager = NotificationManagerCompat.from(context)
+
+        if (ContextCompat.checkSelfPermission(
+                context, Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            val shareIntent = Intent(context, ShareStepsActivity::class.java).apply {
+                putExtra("steps", stepsCompleted)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+
+            val sharePendingIntent = PendingIntent.getActivity(
+                context,
+                3,
+                shareIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+
+            Timber.i("Attempting to share %s steps completed", stepsCompleted)
+            val updatedNotification = NotificationCompat.Builder(context, CHANNEL_ID)
+                .setContentTitle("Walking Session Completed")
+                .setContentText("Would you like to share that you completed $stepsCompleted steps?")
+                .setSmallIcon(R.drawable.ic_launcher_background)
+                .addAction(0, "Share Steps", sharePendingIntent)
+                .addAction(0, "Dismiss", stopPendingIntent)
+                .build()
+            notificationManager.notify(NOTIFICATION_ID, updatedNotification)
+        }
+    }
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     private fun updateNotification(
         context: Context,
