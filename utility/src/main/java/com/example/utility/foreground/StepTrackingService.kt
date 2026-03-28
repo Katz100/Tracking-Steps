@@ -33,6 +33,8 @@ class StepTrackingService : Service() {
         const val CHANNEL_ID = "steps"
         const val NOTIFICATION_ID = 100
         const val ACTION_STOP_SESSION = "com.example.utility.foreground.ACTION_STOP_SESSION"
+        const val ACTION_PAUSE_SESSION = "com.example.utility.foreground.ACTION_PAUSE_SESSION"
+        const val ACTION_RESUME_SESSION = "com.example.utility.foreground.ACTION_RESUME_SESSION"
         const val CALORIES_CONSTANT = 0.00023
     }
 
@@ -42,7 +44,9 @@ class StepTrackingService : Service() {
     @Inject
     lateinit var healthConnectService: HealthConnectService
 
-    lateinit var pendingIntent: PendingIntent
+    lateinit var stopPendingIntent: PendingIntent
+    lateinit var pausePendingIntent: PendingIntent
+    lateinit var resumePendingIntent: PendingIntent
     lateinit var startTime: Instant
     lateinit var notificationLayout: RemoteViews
     lateinit var notificationLayoutExpanded: RemoteViews
@@ -50,6 +54,7 @@ class StepTrackingService : Service() {
     var currentSteps = -1
     var stepGoal = -1
     var weight = -1
+    var sessionState = SessionState.RESUME
 
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     override fun onCreate() {
@@ -62,13 +67,35 @@ class StepTrackingService : Service() {
             action = ACTION_STOP_SESSION
         }
 
+        val pauseServiceIntent = Intent(this, StepTrackingService::class.java).apply {
+            action = ACTION_PAUSE_SESSION
+        }
+
+        val resumeServiceIntent = Intent(this, StepTrackingService::class.java).apply {
+            action = ACTION_RESUME_SESSION
+        }
+
         val flag = PendingIntent.FLAG_IMMUTABLE
 
-        pendingIntent = PendingIntent.getService(
+        stopPendingIntent = PendingIntent.getService(
             this,
             0,
             stopServiceIntent,
             flag
+        )
+
+        pausePendingIntent = PendingIntent.getService(
+            this,
+            1,
+            pauseServiceIntent,
+            flag,
+        )
+
+        resumePendingIntent = PendingIntent.getService(
+            this,
+            2,
+            resumeServiceIntent,
+            flag,
         )
 
         stepSensorManager.onActiveStepDetected = {
@@ -81,35 +108,43 @@ class StepTrackingService : Service() {
         }
 
         stepSensorManager.onTotalStepCountChanged = {
-            currentSteps++
-            StepCountProvider.updateCurrentSteps(currentSteps)
+            when (sessionState) {
+                SessionState.RESUME -> {
+                    currentSteps++
+                    StepCountProvider.updateCurrentSteps(currentSteps)
 
-            notificationLayoutExpanded.setTextViewText(
-                R.id.steps_counter,
-                "$currentSteps Steps"
-            )
+                    notificationLayoutExpanded.setTextViewText(
+                        R.id.steps_counter,
+                        "$currentSteps Steps"
+                    )
 
-            notificationLayoutExpanded.setProgressBar(
-                R.id.progress_indicator,
-                stepGoal,
-                currentSteps,
-                false
-            )
+                    notificationLayoutExpanded.setProgressBar(
+                        R.id.progress_indicator,
+                        stepGoal,
+                        currentSteps,
+                        false
+                    )
 
-            val caloriesBurned = (currentSteps * weight * CALORIES_CONSTANT).roundToInt()
+                    val caloriesBurned = (currentSteps * weight * CALORIES_CONSTANT).roundToInt()
 
-            notificationLayoutExpanded.setTextViewText(
-                R.id.calories_burned_text,
-                caloriesBurned.toString()
-            )
-            updateNotification(
-                this,
-                pendingIntent,
-            )
-            if (currentSteps >= stepGoal) {
-                Timber.i("Step goal has been met, ending service...")
-                stopSelf()
+                    notificationLayoutExpanded.setTextViewText(
+                        R.id.calories_burned_text,
+                        caloriesBurned.toString()
+                    )
+                    updateNotification(this)
+                    if (currentSteps >= stepGoal) {
+                        Timber.i("Step goal has been met, ending service...")
+                        stopSelf()
+                    }
+                }
+                SessionState.PAUSE -> {
+                    Timber.i("onTotalStepCounterChanged called but session is paused so not incrementing steps or updating notification")
+                }
+                SessionState.END -> {
+                    Timber.i("Session has been ended")
+                }
             }
+
         }
     }
 
@@ -141,6 +176,7 @@ class StepTrackingService : Service() {
         return null
     }
 
+    @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
@@ -152,6 +188,21 @@ class StepTrackingService : Service() {
         if (intent.action == ACTION_STOP_SESSION) {
             Timber.i("User has ended session from notification, stopping service...")
             stopSelf()
+            return START_STICKY
+        }
+
+        if (intent.action == ACTION_PAUSE_SESSION) {
+            Timber.i("User has paused the session from the notification, returning early from onStartCommand")
+            sessionState = SessionState.PAUSE
+            updateNotification(this)
+            stepSensorManager.unregisterListener()
+            return START_STICKY
+        }
+
+        if (intent.action == ACTION_RESUME_SESSION) {
+            Timber.i("User has resumed session from notification")
+            sessionState = SessionState.RESUME
+            stepSensorManager.registerListener()
             return START_STICKY
         }
 
@@ -190,7 +241,6 @@ class StepTrackingService : Service() {
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     private fun updateNotification(
         context: Context,
-        pendingIntent: PendingIntent,
     ) {
         val notificationManager = NotificationManagerCompat.from(context)
 
@@ -198,17 +248,37 @@ class StepTrackingService : Service() {
                 context, Manifest.permission.POST_NOTIFICATIONS
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            val updatedNotification = NotificationCompat.Builder(context, CHANNEL_ID)
-                .setContentTitle("Steps")
-                .setSmallIcon(R.drawable.ic_launcher_background)
-                .setStyle(NotificationCompat.DecoratedCustomViewStyle())
-                .setCustomContentView(notificationLayout)
-                .setCustomBigContentView(notificationLayoutExpanded)
-                .addAction(0, "End Session", pendingIntent)
-                .build()
-            notificationManager.notify(NOTIFICATION_ID, updatedNotification)
+            if (sessionState == SessionState.RESUME) {
+                val updatedNotification = NotificationCompat.Builder(context, CHANNEL_ID)
+                    .setContentTitle("Steps")
+                    .setSmallIcon(R.drawable.ic_launcher_background)
+                    .setStyle(NotificationCompat.DecoratedCustomViewStyle())
+                    .setCustomContentView(notificationLayout)
+                    .setCustomBigContentView(notificationLayoutExpanded)
+                    .addAction(0, "End Session", stopPendingIntent)
+                    .addAction(0, "Pause Session", pausePendingIntent)
+                    .build()
+                notificationManager.notify(NOTIFICATION_ID, updatedNotification)
+            } else {
+                val updatedNotification = NotificationCompat.Builder(context, CHANNEL_ID)
+                    .setContentTitle("Steps")
+                    .setSmallIcon(R.drawable.ic_launcher_background)
+                    .setStyle(NotificationCompat.DecoratedCustomViewStyle())
+                    .setCustomContentView(notificationLayout)
+                    .setCustomBigContentView(notificationLayoutExpanded)
+                    .addAction(0, "End Session", stopPendingIntent)
+                    .addAction(0, "Resume Session", resumePendingIntent)
+                    .build()
+                notificationManager.notify(NOTIFICATION_ID, updatedNotification)
+            }
         } else {
             Timber.e("Unable to update notification due to permissions not being granted")
         }
     }
+}
+
+enum class SessionState {
+    PAUSE,
+    RESUME,
+    END,
 }
