@@ -31,6 +31,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.utility.foreground.StepCountProvider
 import com.example.utility.foreground.StepTrackingService
 import timber.log.Timber
 
@@ -75,6 +76,18 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        viewModel.onSessionCompleted = {
+            val sendIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, "I completed $it steps!")
+                type = "text/plain"
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+
+            val shareIntent = Intent.createChooser(sendIntent, null)
+            startActivity(shareIntent)
+        }
 
         createNotificationChannel(this)
         activityRecognitionPermissionLauncher.launch(Manifest.permission.ACTIVITY_RECOGNITION)
