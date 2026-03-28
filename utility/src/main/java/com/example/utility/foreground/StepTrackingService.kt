@@ -21,9 +21,6 @@ import androidx.core.content.ContextCompat
 import com.example.utility.health_connect.HealthConnectService
 import com.example.utility.sensor.StepSensorManager
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.time.Instant
 import javax.inject.Inject
@@ -41,8 +38,6 @@ class StepTrackingService : Service() {
         const val CALORIES_CONSTANT = 0.00023
     }
 
-    val scope = CoroutineScope(Dispatchers.Default)
-
     @Inject
     lateinit var stepSensorManager: StepSensorManager
 
@@ -52,7 +47,6 @@ class StepTrackingService : Service() {
     lateinit var stopPendingIntent: PendingIntent
     lateinit var pausePendingIntent: PendingIntent
     lateinit var resumePendingIntent: PendingIntent
-    lateinit var sharePendingIntent: PendingIntent
     lateinit var startTime: Instant
     lateinit var notificationLayout: RemoteViews
     lateinit var notificationLayoutExpanded: RemoteViews

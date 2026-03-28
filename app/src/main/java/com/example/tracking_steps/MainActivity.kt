@@ -31,7 +31,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.utility.foreground.StepCountProvider
 import com.example.utility.foreground.StepTrackingService
 import timber.log.Timber
 
