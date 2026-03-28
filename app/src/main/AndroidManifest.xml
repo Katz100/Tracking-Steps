@@ -26,9 +26,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TrackingSteps"
         tools:targetApi="31" >
-        <activity
-            android:name=".ShareStepsActivity"
-            android:exported="false" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
