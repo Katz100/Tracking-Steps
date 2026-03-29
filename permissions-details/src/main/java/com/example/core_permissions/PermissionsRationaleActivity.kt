@@ -21,7 +21,7 @@ class PermissionsRationaleActivity : ComponentActivity() {
             TrackingStepsTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
-                        name = "Android",
+                        name = "Cody",
                         modifier = Modifier.padding(innerPadding)
                     )
                 }

@@ -31,6 +31,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.utility.foreground.StepCountProvider
 import com.example.utility.foreground.StepTrackingService
 import timber.log.Timber
 
@@ -94,7 +95,9 @@ class MainActivity : ComponentActivity() {
 
             LaunchedEffect(stepsCounter) {
                 if (stepsCounter == currentGoal) {
+                    Timber.d("stepsCounter: $stepsCounter \n currentGoal: $currentGoal")
                     Toast.makeText(this@MainActivity, "You met your goal", Toast.LENGTH_SHORT).show()
+                    StepCountProvider.resetSessionValues()
                 }
             }
 

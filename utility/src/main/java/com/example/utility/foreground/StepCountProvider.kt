@@ -7,7 +7,7 @@ object StepCountProvider {
     private val _currentSteps = MutableStateFlow<Int>(0)
     val currentSteps: StateFlow<Int> = _currentSteps
 
-    private val _currentGoal = MutableStateFlow<Int>(0)
+    private val _currentGoal = MutableStateFlow<Int>(1)
     val currentGoal: StateFlow<Int> = _currentGoal
 
     fun updateCurrentSteps(value: Int) {
@@ -16,5 +16,10 @@ object StepCountProvider {
 
     fun updateCurrentGoal(value: Int) {
         _currentGoal.value = value
+    }
+
+    fun resetSessionValues() {
+        _currentSteps.value = 0
+        _currentGoal.value = 1
     }
 }

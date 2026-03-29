@@ -4,7 +4,13 @@ import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 class SystemSensorProvider @Inject constructor(
     @ApplicationContext private val context: Context
@@ -20,6 +26,26 @@ class SystemSensorProvider @Inject constructor(
     override fun unregisterListener(listener: StepSensorListener) {
         sensorManager.unregisterListener(listener)
     }
+}
+
+// Simulate steps taken if sensors are not supported in targeted device
+class SystemSensorProviderEmulator @Inject constructor(): SensorProvider {
+    private var job: Job? = null
+    private val scope = CoroutineScope(Dispatchers.IO)
+
+    override fun registerListener(listener: StepSensorListener) {
+        job = scope.launch {
+            while (true) {
+                delay(2.seconds)
+                listener.onTotalStepCountChanged(1000)
+            }
+        }
+    }
+
+    override fun unregisterListener(listener: StepSensorListener) {
+        job?.cancel()
+    }
+
 }
 
 class SystemSensorProviderFake: SensorProvider {
