@@ -16,7 +16,7 @@ import javax.inject.Singleton
 @Module
 object HealthConnectModule {
 
-    const val IS_EMULATOR = true
+    const val IS_EMULATOR = false
 
     @Provides
     @Singleton
