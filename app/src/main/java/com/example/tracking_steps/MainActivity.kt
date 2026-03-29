@@ -92,6 +92,12 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
+            LaunchedEffect(stepsCounter) {
+                if (stepsCounter == currentGoal) {
+                    Toast.makeText(this@MainActivity, "You met your goal", Toast.LENGTH_SHORT).show()
+                }
+            }
+
             TrackingStepsTheme {
                 Scaffold(
                     modifier = Modifier

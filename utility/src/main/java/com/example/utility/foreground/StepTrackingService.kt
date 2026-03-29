@@ -29,7 +29,7 @@ import kotlin.math.roundToInt
 @AndroidEntryPoint
 class StepTrackingService : Service() {
 
-     companion object {
+    companion object {
         const val CHANNEL_ID = "steps"
         const val NOTIFICATION_ID = 100
         const val ACTION_STOP_SESSION = "com.example.utility.foreground.ACTION_STOP_SESSION"
@@ -108,44 +108,36 @@ class StepTrackingService : Service() {
         }
 
         stepSensorManager.onTotalStepCountChanged = {
-            when (sessionState) {
-                SessionState.RESUME -> {
-                    currentSteps++
-                    StepCountProvider.updateCurrentSteps(currentSteps)
+            if (sessionState == SessionState.RESUME) {
+                SessionState.RESUME
+                currentSteps++
+                StepCountProvider.updateCurrentSteps(currentSteps)
 
-                    notificationLayoutExpanded.setTextViewText(
-                        R.id.steps_counter,
-                        "$currentSteps Steps"
-                    )
+                notificationLayoutExpanded.setTextViewText(
+                    R.id.steps_counter,
+                    "$currentSteps Steps"
+                )
 
-                    notificationLayoutExpanded.setProgressBar(
-                        R.id.progress_indicator,
-                        stepGoal,
-                        currentSteps,
-                        false
-                    )
+                notificationLayoutExpanded.setProgressBar(
+                    R.id.progress_indicator,
+                    stepGoal,
+                    currentSteps,
+                    false
+                )
 
-                    val caloriesBurned = (currentSteps * weight * CALORIES_CONSTANT).roundToInt()
+                val caloriesBurned = (currentSteps * weight * CALORIES_CONSTANT).roundToInt()
 
-                    notificationLayoutExpanded.setTextViewText(
-                        R.id.calories_burned_text,
-                        caloriesBurned.toString()
-                    )
-                    updateNotification(this)
-                    if (currentSteps >= stepGoal) {
-                        Timber.i("Step goal has been met, ending service...")
-                        sessionState = SessionState.END
-                        createShareStepsNotification(this, currentSteps)
-                    }
-                }
-                SessionState.PAUSE -> {
-                    Timber.i("onTotalStepCounterChanged called but session is paused so not incrementing steps or updating notification")
-                }
-                SessionState.END -> {
-                    Timber.i("Session has been ended")
+                notificationLayoutExpanded.setTextViewText(
+                    R.id.calories_burned_text,
+                    caloriesBurned.toString()
+                )
+                updateNotification(this)
+                if (currentSteps >= stepGoal) {
+                    Timber.i("Step goal has been met, ending service...")
+                    sessionState = SessionState.PAUSE
+                    createShareStepsNotification(this, currentSteps)
                 }
             }
-
         }
     }
 
@@ -274,6 +266,7 @@ class StepTrackingService : Service() {
             notificationManager.notify(NOTIFICATION_ID, updatedNotification)
         }
     }
+
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     private fun updateNotification(
         context: Context,
@@ -316,5 +309,4 @@ class StepTrackingService : Service() {
 enum class SessionState {
     PAUSE,
     RESUME,
-    END,
 }
