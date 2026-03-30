@@ -83,8 +83,8 @@ class MainActivity : ComponentActivity() {
         createNotificationChannel(this)
         activityRecognitionPermissionLauncher.launch(Manifest.permission.ACTIVITY_RECOGNITION)
 
-//        val model = Firebase.ai(backend = GenerativeBackend.googleAI())
-//            .generativeModel("gemini-3-flash-preview")
+        val model = Firebase.ai(backend = GenerativeBackend.googleAI())
+            .generativeModel("gemini-3-flash-preview")
 //
 //        // Provide a prompt that contains text
 //        val prompt = "Write a story about a magic backpack."
