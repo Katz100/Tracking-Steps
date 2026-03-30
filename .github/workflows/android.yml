@@ -33,7 +33,11 @@ jobs:
         
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-
+      - name: Recreate google-services.json
+        run: |
+          mkdir -p app
+          echo "${{ secrets.GOOGLE_SERVICES }}" | base64 --decode > app/google-services.json
+          
       - name: Build project
         run: ./gradlew
   
@@ -51,7 +55,12 @@ jobs:
         
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-
+        
+      - name: Recreate google-services.json
+        run: |
+          mkdir -p app
+          echo "${{ secrets.GOOGLE_SERVICES }}" | base64 --decode > app/google-services.json
+          
       - name: Run lint
         run: ./gradlew lint
 
@@ -75,7 +84,12 @@ jobs:
         
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-
+        
+      - name: Recreate google-services.json
+        run: |
+          mkdir -p app
+          echo "${{ secrets.GOOGLE_SERVICES }}" | base64 --decode > app/google-services.json
+          
       - name: Run tests
         run: ./gradlew test testDebugUnitTest --continue
 
