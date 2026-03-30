@@ -44,13 +44,41 @@ class StepTrackingService : Service() {
     @Inject
     lateinit var healthConnectService: HealthConnectService
 
-    lateinit var stopPendingIntent: PendingIntent
-    lateinit var pausePendingIntent: PendingIntent
-    lateinit var resumePendingIntent: PendingIntent
-    lateinit var startTime: Instant
-    lateinit var notificationLayout: RemoteViews
-    lateinit var notificationLayoutExpanded: RemoteViews
+    val flag = PendingIntent.FLAG_IMMUTABLE
 
+    val stopPendingIntent: PendingIntent by lazy {
+        val stopServiceIntent = Intent(this, StepTrackingService::class.java).apply {
+            action = ACTION_STOP_SESSION
+        }
+
+        PendingIntent.getService(this, 0, stopServiceIntent, flag)
+    }
+
+    val pausePendingIntent: PendingIntent by lazy {
+        val pauseServiceIntent = Intent(this, StepTrackingService::class.java).apply {
+            action = ACTION_PAUSE_SESSION
+        }
+
+        PendingIntent.getService(this, 1, pauseServiceIntent, flag)
+    }
+
+    val resumePendingIntent: PendingIntent by lazy {
+        val resumeServiceIntent = Intent(this, StepTrackingService::class.java).apply {
+            action = ACTION_RESUME_SESSION
+        }
+
+        PendingIntent.getService(this, 2, resumeServiceIntent, flag)
+    }
+
+    val notificationLayout: RemoteViews by lazy {
+        RemoteViews(packageName, R.layout.small)
+    }
+
+    val notificationLayoutExpanded: RemoteViews by lazy {
+        RemoteViews(packageName, R.layout.large)
+    }
+
+    lateinit var startTime: Instant
     var currentSteps = -1
     var stepGoal = -1
     var weight = -1
@@ -59,44 +87,6 @@ class StepTrackingService : Service() {
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     override fun onCreate() {
         super.onCreate()
-
-        notificationLayout = RemoteViews(packageName, R.layout.small)
-        notificationLayoutExpanded = RemoteViews(packageName, R.layout.large)
-
-        val stopServiceIntent = Intent(this, StepTrackingService::class.java).apply {
-            action = ACTION_STOP_SESSION
-        }
-
-        val pauseServiceIntent = Intent(this, StepTrackingService::class.java).apply {
-            action = ACTION_PAUSE_SESSION
-        }
-
-        val resumeServiceIntent = Intent(this, StepTrackingService::class.java).apply {
-            action = ACTION_RESUME_SESSION
-        }
-
-        val flag = PendingIntent.FLAG_IMMUTABLE
-
-        stopPendingIntent = PendingIntent.getService(
-            this,
-            0,
-            stopServiceIntent,
-            flag
-        )
-
-        pausePendingIntent = PendingIntent.getService(
-            this,
-            1,
-            pauseServiceIntent,
-            flag,
-        )
-
-        resumePendingIntent = PendingIntent.getService(
-            this,
-            2,
-            resumeServiceIntent,
-            flag,
-        )
 
         stepSensorManager.onActiveStepDetected = {
             Timber.i("Active step detected")
@@ -109,7 +99,6 @@ class StepTrackingService : Service() {
 
         stepSensorManager.onTotalStepCountChanged = {
             if (sessionState == SessionState.RESUME) {
-                SessionState.RESUME
                 currentSteps++
                 StepCountProvider.updateCurrentSteps(currentSteps)
 
@@ -131,7 +120,9 @@ class StepTrackingService : Service() {
                     R.id.calories_burned_text,
                     caloriesBurned.toString()
                 )
+
                 updateNotification(this)
+
                 if (currentSteps >= stepGoal) {
                     Timber.i("Step goal has been met, ending service...")
                     sessionState = SessionState.PAUSE
@@ -256,6 +247,7 @@ class StepTrackingService : Service() {
             )
 
             Timber.i("Attempting to share %s steps completed", stepsCompleted)
+
             val updatedNotification = NotificationCompat.Builder(context, CHANNEL_ID)
                 .setContentTitle("Walking Session Completed")
                 .setContentText("Would you like to share that you completed $stepsCompleted steps?")
@@ -263,6 +255,7 @@ class StepTrackingService : Service() {
                 .addAction(0, "Share Steps", sharePendingIntent)
                 .addAction(0, "Dismiss", stopPendingIntent)
                 .build()
+
             notificationManager.notify(NOTIFICATION_ID, updatedNotification)
         }
     }
