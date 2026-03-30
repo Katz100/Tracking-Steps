@@ -33,6 +33,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.utility.foreground.StepCountProvider
 import com.example.utility.foreground.StepTrackingService
+import com.google.firebase.Firebase
+import com.google.firebase.ai.ai
+import com.google.firebase.ai.type.GenerativeBackend
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -79,6 +82,17 @@ class MainActivity : ComponentActivity() {
 
         createNotificationChannel(this)
         activityRecognitionPermissionLauncher.launch(Manifest.permission.ACTIVITY_RECOGNITION)
+
+//        val model = Firebase.ai(backend = GenerativeBackend.googleAI())
+//            .generativeModel("gemini-3-flash-preview")
+//
+//        // Provide a prompt that contains text
+//        val prompt = "Write a story about a magic backpack."
+//
+//        lifecycleScope.launch {
+//            val response = model.generateContent(prompt)
+//            Timber.i(response.text)
+//        }
 
         setContent {
 
