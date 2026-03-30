@@ -8,3 +8,4 @@ Android application for tracking steps and calories burned in a session
 
 ### Steps to run
 - From Android Studio, import this project from version control
+- Setup google-services.json in the root app's directory
