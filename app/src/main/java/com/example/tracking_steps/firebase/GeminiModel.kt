@@ -33,7 +33,13 @@ class GeminiModel @Inject constructor(): DefaultLifecycleObserver {
             image(imageBitmap)
             text(prompt)
         }
-        val response = JSONObject(model.generateContent(promptToSend).text)
-        return response.getString("calories")
+
+        val response = model.generateContent(promptToSend).text
+
+        return if (response != null) {
+            JSONObject(response).getString("calories")
+        } else {
+            null
+        }
     }
 }
