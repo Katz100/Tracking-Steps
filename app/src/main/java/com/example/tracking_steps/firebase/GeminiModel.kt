@@ -12,6 +12,9 @@ import org.json.JSONObject
 import javax.inject.Inject
 
 class GeminiModel @Inject constructor(): DefaultLifecycleObserver {
+    companion object {
+        const val CALORIES_PROMPT = "How many calories are in this food item?"
+    }
     private val model by lazy {
         val jsonSchema = Schema.obj(
                     mapOf(
@@ -28,10 +31,10 @@ class GeminiModel @Inject constructor(): DefaultLifecycleObserver {
             )
     }
 
-    suspend fun generateContentFromImage(imageBitmap: Bitmap, prompt: String): String? {
+    suspend fun generateContentFromImage(imageBitmap: Bitmap): String? {
         val promptToSend = content {
             image(imageBitmap)
-            text(prompt)
+            text(CALORIES_PROMPT)
         }
 
         val response = model.generateContent(promptToSend).text

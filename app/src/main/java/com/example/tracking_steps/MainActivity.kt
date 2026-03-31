@@ -101,7 +101,7 @@ class MainActivity : ComponentActivity() {
             val imageBitmap = data?.extras?.get("data") as Bitmap
 
             lifecycleScope.launch {
-               val response = model.generateContentFromImage(imageBitmap, "How many calories are in this food item?")
+               val response = model.generateContentFromImage(imageBitmap)
                 Timber.d("Response: $response")
                 Toast.makeText(this@MainActivity, "Calories: ${response}", Toast.LENGTH_LONG).show()
             }
