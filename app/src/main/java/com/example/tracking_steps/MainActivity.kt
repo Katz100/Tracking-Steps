@@ -31,18 +31,14 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.provider.MediaStore
-import android.util.Base64
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.tracking_steps.firebase.GeminiModel
 import com.example.utility.foreground.StepCountProvider
 import com.example.utility.foreground.StepTrackingService
-import com.google.firebase.Firebase
-import com.google.firebase.ai.ai
-import com.google.firebase.ai.type.GenerativeBackend
 import timber.log.Timber
-import java.io.ByteArrayOutputStream
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -52,6 +48,9 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var dataStore: DataStore
+
+    @Inject
+    lateinit var model: GeminiModel
 
     val viewModel: MainViewModel by viewModels()
 
@@ -81,17 +80,16 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    val REQUEST_VIDEO_CAPTURE = 1
+    val REQUEST_IMAGE_CAPTURE = 1
 
     private fun dispatchTakeVideoIntent() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         try {
-            startActivityForResult(intent, REQUEST_VIDEO_CAPTURE)
+            startActivityForResult(intent, REQUEST_IMAGE_CAPTURE)
         } catch (e: ActivityNotFoundException) {
             Timber.e(e, "No app available to handle ACTION_VIDEO_CAPTURE")
         }
     }
-
 
     override fun onActivityResult(
         requestCode: Int,
@@ -99,14 +97,14 @@ class MainActivity : ComponentActivity() {
         data: Intent?,
         caller: ComponentCaller
     ) {
-        if (requestCode == 1 && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             val imageBitmap = data?.extras?.get("data") as Bitmap
 
-            val outputStream = ByteArrayOutputStream()
-            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-            val byteArray = outputStream.toByteArray()
-
-            val base64String = Base64.encodeToString(byteArray, Base64.DEFAULT)
+            lifecycleScope.launch {
+               val response = model.generateContentFromImage(imageBitmap, "How many calories are in this food item?")
+                Timber.d("Response: $response")
+                Toast.makeText(this@MainActivity, "Calories: ${response}", Toast.LENGTH_LONG).show()
+            }
         }
     }
 
@@ -117,9 +115,6 @@ class MainActivity : ComponentActivity() {
 
         createNotificationChannel(this)
         activityRecognitionPermissionLauncher.launch(Manifest.permission.ACTIVITY_RECOGNITION)
-
-        val model = Firebase.ai(backend = GenerativeBackend.googleAI())
-            .generativeModel("gemini-3-flash-preview")
 //
 //        // Provide a prompt that contains text
 //        val prompt = "Write a story about a magic backpack."
