@@ -23,10 +23,15 @@ import androidx.lifecycle.lifecycleScope
 import com.example.utility.sensor.StepSensorManager
 import kotlinx.coroutines.launch
 import android.Manifest
+import android.app.ComponentCaller
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.provider.MediaStore
+import android.util.Base64
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.runtime.LaunchedEffect
@@ -37,6 +42,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.ai.ai
 import com.google.firebase.ai.type.GenerativeBackend
 import timber.log.Timber
+import java.io.ByteArrayOutputStream
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -72,6 +78,35 @@ class MainActivity : ComponentActivity() {
             Timber.i("Permissions for notifications granted")
         } else {
             Timber.i("Permissions for notification denied")
+        }
+    }
+
+    val REQUEST_VIDEO_CAPTURE = 1
+
+    private fun dispatchTakeVideoIntent() {
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        try {
+            startActivityForResult(intent, REQUEST_VIDEO_CAPTURE)
+        } catch (e: ActivityNotFoundException) {
+            Timber.e(e, "No app available to handle ACTION_VIDEO_CAPTURE")
+        }
+    }
+
+
+    override fun onActivityResult(
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?,
+        caller: ComponentCaller
+    ) {
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            val imageBitmap = data?.extras?.get("data") as Bitmap
+
+            val outputStream = ByteArrayOutputStream()
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+            val byteArray = outputStream.toByteArray()
+
+            val base64String = Base64.encodeToString(byteArray, Base64.DEFAULT)
         }
     }
 
@@ -196,7 +231,10 @@ class MainActivity : ComponentActivity() {
                         onGoalChange = { viewModel.onGoalChange(it) },
                         goalValue = goal,
                         weightValue = weightTxt,
-                        onWeightChange = { viewModel.onWeightChange(it) }
+                        onWeightChange = { viewModel.onWeightChange(it) },
+                        takePhoto = {
+                            dispatchTakeVideoIntent()
+                        }
                     )
                 }
             }

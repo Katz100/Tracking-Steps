@@ -19,6 +19,7 @@ import androidx.health.connect.client.response.InsertRecordsResponse
 import androidx.health.connect.client.time.TimeRangeFilter
 import androidx.health.connect.client.units.Energy
 import androidx.health.connect.client.units.Mass
+import timber.log.Timber
 import java.time.Instant
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
@@ -52,6 +53,7 @@ class HealthConnectService @Inject constructor(
     suspend fun hasAllPermissions(
     ): Boolean {
         val granted = healthConnectClient.permissionController.getGrantedPermissions()
+        Timber.d("Granted permissions: $granted")
         return granted.containsAll(PERMISSIONS)
     }
 

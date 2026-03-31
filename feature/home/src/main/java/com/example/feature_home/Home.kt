@@ -24,6 +24,7 @@ fun Home(
     stopForeground: () -> Unit,
     requestForeground: () -> Unit,
     onGoalChange: (String) -> Unit,
+    takePhoto: () -> Unit,
     steps: Int,
     goal: Int,
     goalValue: String,
@@ -85,6 +86,14 @@ fun Home(
                 }
             ) {
                 Text("Write Steps")
+            }
+
+            Button(
+                onClick = {
+                    takePhoto()
+                }
+            ) {
+                Text("Take Photo")
             }
         }
     }
