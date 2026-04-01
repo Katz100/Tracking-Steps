@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -14,6 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.utility.composables.Circular
+import com.example.utility.composables.LogFoodCard
+import com.example.utility.composables.StartSessionCard
 
 @Composable
 fun Home(
@@ -65,9 +68,7 @@ fun Home(
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
-            Button(onClick = launchForeground) {
-                Text("Launch foreground")
-            }
+            StartSessionCard(onClick = launchForeground, modifier = Modifier.size(100.dp))
 
             Button(onClick = stopForeground) {
                 Text("stop foreground")
@@ -88,13 +89,7 @@ fun Home(
                 Text("Write Steps")
             }
 
-            Button(
-                onClick = {
-                    takePhoto()
-                }
-            ) {
-                Text("Take Photo")
-            }
+            LogFoodCard(onClick = takePhoto, modifier = Modifier.size(100.dp))
         }
     }
 }

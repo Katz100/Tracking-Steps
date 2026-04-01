@@ -25,14 +25,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun StartSessionCard(
+fun LogFoodCard(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
     val gradient = Brush.linearGradient(
         colors = listOf(
-            Color(0xFFFF9800),
-            Color(0xFFFFB74D)
+            Color(0xFF44D4FF),
+            Color(0xFF4DC1FF)
         )
     )
 
@@ -51,13 +51,13 @@ fun StartSessionCard(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(R.drawable.walking),
+                painter = painterResource(R.drawable.camera),
                 contentDescription = "Icon",
                 modifier = Modifier.size(25.dp)
             )
             Spacer(modifier = Modifier.padding(top = 8.dp))
             Text(
-                text = "START WALK",
+                text = "LOG FOOD",
                 style = MaterialTheme.typography.labelLarge.copy(
                     fontWeight = FontWeight.Bold,
                     color = Color.White
@@ -69,8 +69,8 @@ fun StartSessionCard(
 
 @Preview
 @Composable
-fun StartSessionCardPreview() {
-    StartSessionCard(
+fun LogFoodCardPreview() {
+    LogFoodCard (
         modifier = Modifier.size(100.dp),
         onClick = {},
     )
