@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.feature_home.HomePage
 import com.example.tracking_steps.firebase.GeminiModel
+import com.example.tracking_steps.nav.Nav
 import com.example.utility.foreground.StepCountProvider
 import com.example.utility.foreground.StepTrackingService
 import timber.log.Timber
@@ -56,15 +57,17 @@ class MainActivity : ComponentActivity() {
 
     val viewModel: MainViewModel by viewModels()
 
-    val requestPermissions = registerForActivityResult(HealthConnectService.requestPermissionsForHealthConnect) { granted ->
-        if (granted.containsAll(HealthConnectService.PERMISSIONS)) {
-            Timber.i("Permission has been granted for Health Connect")
-        } else {
-            Timber.i("Permissions have been denied for Health Connect")
+    val requestPermissions =
+        registerForActivityResult(HealthConnectService.requestPermissionsForHealthConnect) { granted ->
+            if (granted.containsAll(HealthConnectService.PERMISSIONS)) {
+                Timber.i("Permission has been granted for Health Connect")
+            } else {
+                Timber.i("Permissions have been denied for Health Connect")
+            }
         }
-    }
 
-    private val activityRecognitionPermissionLauncher = registerForActivityResult(StepSensorManager.requestPermissionsForSteps) { granted ->
+    private val activityRecognitionPermissionLauncher =
+        registerForActivityResult(StepSensorManager.requestPermissionsForSteps) { granted ->
             if (granted) {
                 Timber.i("Permissions have been granted for step sensor")
             } else {
@@ -103,9 +106,13 @@ class MainActivity : ComponentActivity() {
             val imageBitmap = data?.extras?.get("data") as Bitmap
 
             lifecycleScope.launch {
-               val response = model.generateContentFromImage(imageBitmap)
+                val response = model.generateContentFromImage(imageBitmap)
                 Timber.d("Response: $response")
-                Toast.makeText(this@MainActivity, "Response: ${response.toString()}", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this@MainActivity,
+                    "Response: ${response.toString()}",
+                    Toast.LENGTH_LONG
+                ).show()
                 StepCountProvider.increaseCaloriesConsumed(response?.calories ?: 0)
             }
         }
@@ -143,30 +150,45 @@ class MainActivity : ComponentActivity() {
             LaunchedEffect(stepsCounter) {
                 if (stepsCounter == currentGoal) {
                     Timber.d("stepsCounter: $stepsCounter \n currentGoal: $currentGoal")
-                    Toast.makeText(this@MainActivity, "You met your goal", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, "You met your goal", Toast.LENGTH_SHORT)
+                        .show()
                     StepCountProvider.resetSessionValues()
                 }
             }
 
             TrackingStepsTheme {
-                Scaffold(
-                    modifier = Modifier,
-                    containerColor = Color.White
-                ) { innerPadding ->
-                    HomePage(
-                        modifier = Modifier.padding(innerPadding),
-                        onLogFoodClicked = {
-                            dispatchTakeImageIntent()
-                        },
-                        onStartWalkClicked = {
-                            val intent = Intent(this@MainActivity, StepTrackingService::class.java).apply {
+                Nav(
+                    onLogFoodClicked = {
+                        dispatchTakeImageIntent()
+                    },
+                    onStartWalkClicked = {
+                        val intent =
+                            Intent(this@MainActivity, StepTrackingService::class.java).apply {
                                 putExtra("steps", 0)
                                 putExtra("goal", goal.toIntOrNull() ?: 100)
                                 putExtra("weight", weightTxt.toIntOrNull() ?: 180)
                             }
-                            startForegroundService(intent)
-                        }
-                    )
+                        startForegroundService(intent)
+                    }
+                )
+//                Scaffold(
+//                    modifier = Modifier,
+//                    containerColor = Color.White
+//                ) { innerPadding ->
+//                    HomePage(
+//                        modifier = Modifier.padding(innerPadding),
+//                        onLogFoodClicked = {
+//                            dispatchTakeImageIntent()
+//                        },
+//                        onStartWalkClicked = {
+//                            val intent = Intent(this@MainActivity, StepTrackingService::class.java).apply {
+//                                putExtra("steps", 0)
+//                                putExtra("goal", goal.toIntOrNull() ?: 100)
+//                                putExtra("weight", weightTxt.toIntOrNull() ?: 180)
+//                            }
+//                            startForegroundService(intent)
+//                        }
+//                    )
 //                    Home(
 //                        modifier = Modifier.padding(innerPadding),
 //                        steps = stepsCounter,
@@ -249,7 +271,7 @@ class MainActivity : ComponentActivity() {
 //                            dispatchTakeImageIntent()
 //                        }
 //                    )
-                }
+//                }
             }
         }
     }

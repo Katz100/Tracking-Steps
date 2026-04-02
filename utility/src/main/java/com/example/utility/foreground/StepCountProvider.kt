@@ -16,6 +16,13 @@ object StepCountProvider {
     private val _caloriesBurned = MutableStateFlow<Int>(0)
     val caloriesBurned: StateFlow<Int> = _caloriesBurned
 
+    private val _caloriesProgress = MutableStateFlow<Float>(0f)
+    val caloriesProgress: StateFlow<Float> = _caloriesProgress
+
+    fun updateCaloriesProgress(value: Float) {
+        _caloriesProgress.value = value
+    }
+
     fun updateCaloriesBurned(value: Int) {
         _caloriesBurned.value = value
     }

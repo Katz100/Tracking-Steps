@@ -29,13 +29,13 @@ fun HomePage(
     modifier: Modifier = Modifier,
     onLogFoodClicked: () -> Unit = {},
     onStartWalkClicked: () -> Unit = {},
-    caloriesProgress: Float = 0f,
     viewModel: HomePageViewModel = hiltViewModel()
 ) {
     val scrollState = rememberScrollState()
     val stepsTaken = viewModel.stepsTaken.collectAsState().value
     val caloriesBurned = viewModel.caloriesBurned.collectAsState().value
     val caloriesConsumed = viewModel.caloriesConsumed.collectAsState().value
+    val caloriesProgress = viewModel.caloriesProgress.collectAsState().value
 
     Column(
         modifier = modifier.fillMaxSize()

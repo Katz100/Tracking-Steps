@@ -10,4 +10,5 @@ class HomePageViewModel @Inject constructor(): ViewModel() {
     val stepsTaken = StepCountProvider.currentSteps
     val caloriesBurned = StepCountProvider.caloriesBurned
     val caloriesConsumed = StepCountProvider.caloriesConsumed
+    val caloriesProgress = StepCountProvider.caloriesProgress
 }

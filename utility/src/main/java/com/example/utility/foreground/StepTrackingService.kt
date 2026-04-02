@@ -128,8 +128,11 @@ class StepTrackingService : Service() {
                     currentSteps,
                     false
                 )
-
                 val caloriesBurned = (currentSteps * weight * CALORIES_CONSTANT).roundToInt()
+                if (caloriesConsumed != 0) {
+                    val caloriesProgress = (caloriesBurned / caloriesConsumed).toFloat()
+                    StepCountProvider.updateCaloriesProgress(caloriesProgress)
+                }
                 StepCountProvider.updateCaloriesBurned(caloriesBurned)
 
                 notificationLayoutExpanded.setTextViewText(
