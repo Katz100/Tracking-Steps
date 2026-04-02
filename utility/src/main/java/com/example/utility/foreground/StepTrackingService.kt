@@ -21,6 +21,10 @@ import androidx.core.content.ContextCompat
 import com.example.utility.health_connect.HealthConnectService
 import com.example.utility.sensor.StepSensorManager
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.time.Instant
 import javax.inject.Inject
@@ -37,6 +41,9 @@ class StepTrackingService : Service() {
         const val ACTION_RESUME_SESSION = "com.example.utility.foreground.ACTION_RESUME_SESSION"
         const val CALORIES_CONSTANT = 0.00023
     }
+
+    val scope = CoroutineScope(Dispatchers.IO)
+    var job: Job? = null
 
     @Inject
     lateinit var stepSensorManager: StepSensorManager
@@ -82,11 +89,19 @@ class StepTrackingService : Service() {
     var currentSteps = -1
     var stepGoal = -1
     var weight = -1
+    var caloriesGoal = 0
     var sessionState = SessionState.RESUME
 
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     override fun onCreate() {
         super.onCreate()
+
+        job = scope.launch {
+            StepCountProvider.caloriesGoal.collect {
+                caloriesGoal = it
+                Timber.d("Calories goal updated $caloriesGoal")
+            }
+        }
 
         stepSensorManager.onActiveStepDetected = {
             Timber.i("Active step detected")
@@ -123,11 +138,11 @@ class StepTrackingService : Service() {
 
                 updateNotification(this)
 
-                if (currentSteps >= stepGoal) {
-                    Timber.i("Step goal has been met, ending service...")
-                    sessionState = SessionState.PAUSE
-                    createShareStepsNotification(this, currentSteps)
-                }
+//                if (currentSteps >= stepGoal) {
+//                    Timber.i("Step goal has been met, ending service...")
+//                    sessionState = SessionState.PAUSE
+//                    createShareStepsNotification(this, currentSteps)
+//                }
             }
         }
     }
@@ -135,6 +150,8 @@ class StepTrackingService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         stepSensorManager.unregisterListener()
+        Timber.i("Ending job for collecting calories from food items")
+        job?.cancel()
         /* Maybe should use work manager to write steps/or uncomment below to just write steps for sessions */
 
 //        scope.launch {

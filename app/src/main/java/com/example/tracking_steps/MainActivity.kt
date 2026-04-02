@@ -104,6 +104,7 @@ class MainActivity : ComponentActivity() {
                val response = model.generateContentFromImage(imageBitmap)
                 Timber.d("Response: $response")
                 Toast.makeText(this@MainActivity, "Response: ${response.toString()}", Toast.LENGTH_LONG).show()
+                StepCountProvider.increaseCaloriesGoal(response?.calories ?: 0)
             }
         }
     }

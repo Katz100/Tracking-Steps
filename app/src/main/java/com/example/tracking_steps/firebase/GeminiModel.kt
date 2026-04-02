@@ -1,7 +1,6 @@
 package com.example.tracking_steps.firebase
 
 import android.graphics.Bitmap
-import androidx.lifecycle.DefaultLifecycleObserver
 import com.google.firebase.Firebase
 import com.google.firebase.ai.ai
 import com.google.firebase.ai.type.GenerativeBackend
@@ -9,13 +8,15 @@ import com.google.firebase.ai.type.Schema
 import com.google.firebase.ai.type.content
 import com.google.firebase.ai.type.generationConfig
 import org.json.JSONObject
+import timber.log.Timber
 import javax.inject.Inject
 
-class GeminiModel @Inject constructor(): DefaultLifecycleObserver {
+class GeminiModel @Inject constructor() {
     companion object {
         const val CALORIES_PROMPT = "How many calories are in this food item?"
     }
     private val model by lazy {
+        Timber.i("Initializing model")
         val jsonSchema = Schema.obj(
                     mapOf(
                         "foodName" to Schema.string(),
