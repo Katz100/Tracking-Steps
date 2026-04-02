@@ -103,7 +103,7 @@ class MainActivity : ComponentActivity() {
             lifecycleScope.launch {
                val response = model.generateContentFromImage(imageBitmap)
                 Timber.d("Response: $response")
-                Toast.makeText(this@MainActivity, "Calories: ${response}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@MainActivity, "Response: ${response.toString()}", Toast.LENGTH_LONG).show()
             }
         }
     }

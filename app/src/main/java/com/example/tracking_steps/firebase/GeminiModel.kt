@@ -18,7 +18,8 @@ class GeminiModel @Inject constructor(): DefaultLifecycleObserver {
     private val model by lazy {
         val jsonSchema = Schema.obj(
                     mapOf(
-                        "calories" to Schema.string()
+                        "foodName" to Schema.string(),
+                        "calories" to Schema.integer(),
                     ),
                 )
         Firebase.ai(backend = GenerativeBackend.googleAI())
@@ -31,7 +32,7 @@ class GeminiModel @Inject constructor(): DefaultLifecycleObserver {
             )
     }
 
-    suspend fun generateContentFromImage(imageBitmap: Bitmap): String? {
+    suspend fun generateContentFromImage(imageBitmap: Bitmap): FoodItem? {
         val promptToSend = content {
             image(imageBitmap)
             text(CALORIES_PROMPT)
@@ -40,9 +41,16 @@ class GeminiModel @Inject constructor(): DefaultLifecycleObserver {
         val response = model.generateContent(promptToSend).text
 
         return if (response != null) {
-            JSONObject(response).getString("calories")
+            val calories = JSONObject(response).getInt("calories")
+            val foodName = JSONObject(response).getString("foodName")
+            FoodItem(foodName, calories)
         } else {
             null
         }
     }
 }
+
+data class FoodItem (
+    val foodName: String,
+    val calories: Int,
+)

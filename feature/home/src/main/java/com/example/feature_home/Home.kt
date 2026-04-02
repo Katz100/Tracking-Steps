@@ -1,11 +1,15 @@
 package com.example.feature_home
 
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -14,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.example.utility.composables.CaloriesBurnedCard
 import com.example.utility.composables.Circular
 import com.example.utility.composables.LogFoodCard
 import com.example.utility.composables.StartSessionCard
@@ -38,7 +43,11 @@ fun Home(
         .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Column() {
+        val scroll = rememberScrollState()
+
+        Column(
+            modifier = Modifier.verticalScroll(scroll)
+        ) {
             Text(steps.toString())
 
             Circular(
@@ -88,6 +97,8 @@ fun Home(
             ) {
                 Text("Write Steps")
             }
+
+            CaloriesBurnedCard(calories = 1000, progress = 0.75f, modifier = Modifier.size(width = 500.dp, height = 200.dp))
 
             LogFoodCard(onClick = takePhoto, modifier = Modifier.size(100.dp))
         }
