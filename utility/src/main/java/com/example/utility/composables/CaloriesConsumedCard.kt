@@ -20,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -29,9 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun CaloriesBurnedCard(
+fun CaloriesConsumedCard(
     calories: Int,
-    progress: Float,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -52,7 +50,7 @@ fun CaloriesBurnedCard(
             ) {
                 Column {
                     Text(
-                        text = "BURNED",
+                        text = "CONSUMED",
                         color = colorResource(R.color.labelColor),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.SemiBold,
@@ -63,7 +61,7 @@ fun CaloriesBurnedCard(
 
                     Text(
                         text = "%,d".format(calories),
-                        color = colorResource(R.color.accent),
+                        color = colorResource(R.color.lightGreenColor),
                         fontSize = 34.sp,
                         fontWeight = FontWeight.ExtraBold,
                         lineHeight = 36.sp
@@ -76,31 +74,12 @@ fun CaloriesBurnedCard(
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.walking),
+                        painter = painterResource(R.drawable.fork),
                         contentDescription = "Burned calories",
-                        tint = colorResource(R.color.accent),
+                        tint = colorResource(R.color.lightGreenColor),
                         modifier = Modifier.size(34.dp)
                     )
                 }
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 25.dp)
-                    .height(8.dp)
-                    .clip(RoundedCornerShape(50))
-                    .background(colorResource(R.color.trackColor))
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(progress.coerceIn(0f, 1f))
-                        .height(8.dp)
-                        .clip(RoundedCornerShape(50))
-                        .background(colorResource(R.color.accent))
-                )
             }
         }
     }
@@ -108,10 +87,9 @@ fun CaloriesBurnedCard(
 
 @Preview
 @Composable
-fun CaloriesBurnedCardPreview() {
-    CaloriesBurnedCard(
+fun CaloriesConsumedCardPreview() {
+    CaloriesConsumedCard(
         modifier = Modifier.size(width = 500.dp, height = 200.dp),
-        progress = .75f,
         calories = 1000
     )
 }

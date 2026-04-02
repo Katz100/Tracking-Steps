@@ -89,7 +89,7 @@ class StepTrackingService : Service() {
     var currentSteps = -1
     var stepGoal = -1
     var weight = -1
-    var caloriesGoal = 0
+    var caloriesConsumed = 0
     var sessionState = SessionState.RESUME
 
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
@@ -98,8 +98,8 @@ class StepTrackingService : Service() {
 
         job = scope.launch {
             StepCountProvider.caloriesConsumed.collect {
-                caloriesGoal = it
-                Timber.d("Calories goal updated $caloriesGoal")
+                caloriesConsumed = it
+                Timber.d("Calories consumed updated $caloriesConsumed")
             }
         }
 
