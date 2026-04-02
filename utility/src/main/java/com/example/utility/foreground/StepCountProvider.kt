@@ -10,8 +10,15 @@ object StepCountProvider {
     private val _currentGoal = MutableStateFlow<Int>(1)
     val currentGoal: StateFlow<Int> = _currentGoal
 
-    private val _caloriesGoal = MutableStateFlow<Int>(0)
-    val caloriesGoal: StateFlow<Int> = _caloriesGoal
+    private val _caloriesConsumed = MutableStateFlow<Int>(0)
+    val caloriesConsumed: StateFlow<Int> = _caloriesConsumed
+
+    private val _caloriesBurned = MutableStateFlow<Int>(0)
+    val caloriesBurned: StateFlow<Int> = _caloriesBurned
+
+    fun updateCaloriesBurned(value: Int) {
+        _caloriesBurned.value = value
+    }
 
     fun updateCurrentSteps(value: Int) {
         _currentSteps.value = value
@@ -24,10 +31,10 @@ object StepCountProvider {
     fun resetSessionValues() {
         _currentSteps.value = 0
         _currentGoal.value = 1
-        _caloriesGoal.value = 0
+        _caloriesConsumed.value = 0
     }
 
-    fun increaseCaloriesGoal(value: Int) {
-        _caloriesGoal.value += value
+    fun increaseCaloriesConsumed(value: Int) {
+        _caloriesConsumed.value += value
     }
 }

@@ -82,7 +82,7 @@ class MainActivity : ComponentActivity() {
 
     val REQUEST_IMAGE_CAPTURE = 1
 
-    private fun dispatchTakeVideoIntent() {
+    private fun dispatchTakeImageIntent() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         try {
             startActivityForResult(intent, REQUEST_IMAGE_CAPTURE)
@@ -104,7 +104,7 @@ class MainActivity : ComponentActivity() {
                val response = model.generateContentFromImage(imageBitmap)
                 Timber.d("Response: $response")
                 Toast.makeText(this@MainActivity, "Response: ${response.toString()}", Toast.LENGTH_LONG).show()
-                StepCountProvider.increaseCaloriesGoal(response?.calories ?: 0)
+                StepCountProvider.increaseCaloriesConsumed(response?.calories ?: 0)
             }
         }
     }
@@ -229,7 +229,7 @@ class MainActivity : ComponentActivity() {
                         weightValue = weightTxt,
                         onWeightChange = { viewModel.onWeightChange(it) },
                         takePhoto = {
-                            dispatchTakeVideoIntent()
+                            dispatchTakeImageIntent()
                         }
                     )
                 }

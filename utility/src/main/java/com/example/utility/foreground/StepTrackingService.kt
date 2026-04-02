@@ -97,7 +97,7 @@ class StepTrackingService : Service() {
         super.onCreate()
 
         job = scope.launch {
-            StepCountProvider.caloriesGoal.collect {
+            StepCountProvider.caloriesConsumed.collect {
                 caloriesGoal = it
                 Timber.d("Calories goal updated $caloriesGoal")
             }
@@ -130,6 +130,7 @@ class StepTrackingService : Service() {
                 )
 
                 val caloriesBurned = (currentSteps * weight * CALORIES_CONSTANT).roundToInt()
+                StepCountProvider.updateCaloriesBurned(caloriesBurned)
 
                 notificationLayoutExpanded.setTextViewText(
                     R.id.calories_burned_text,
