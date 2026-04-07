@@ -1,10 +1,9 @@
-package com.example.tracking_steps.di
+package com.example.utility.data.di
 
-import com.example.tracking_steps.data.FoodRepository
-import com.example.tracking_steps.data.FoodRepositoryImpl
+import com.example.utility.data.FoodRepository
+import com.example.utility.data.FoodRepositoryImpl
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton

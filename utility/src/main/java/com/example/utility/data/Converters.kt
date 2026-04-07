@@ -1,8 +1,7 @@
-package com.example.tracking_steps.data
+package com.example.utility.data
 
 import androidx.room.TypeConverter
 import java.util.Date
-import javax.inject.Inject
 
 class Converters {
     @TypeConverter

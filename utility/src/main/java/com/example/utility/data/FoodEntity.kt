@@ -1,4 +1,4 @@
-package com.example.tracking_steps.data
+package com.example.utility.data
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

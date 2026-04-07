@@ -1,7 +1,6 @@
-package com.example.tracking_steps.data
+package com.example.utility.data
 
-import com.example.tracking_steps.data.db.FoodDao
-import com.example.tracking_steps.firebase.FoodItem
+import com.example.utility.data.db.FoodDao
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.Date
@@ -10,7 +9,7 @@ import javax.inject.Inject
 interface FoodRepository {
     val currentDayFoodItems: Flow<List<FoodItem>>
 
-    fun insertFoodItem(foodItem: FoodItem)
+    suspend fun insertFoodItem(foodItem: FoodItem)
 }
 
 class FoodRepositoryImpl @Inject constructor(
@@ -22,7 +21,7 @@ class FoodRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun insertFoodItem(foodItem: FoodItem) {
+    override suspend fun insertFoodItem(foodItem: FoodItem) {
         foodDao.insertAll(foodItem.asEntity())
     }
 

@@ -83,6 +83,12 @@ dependencies {
     testImplementation ("org.mockito:mockito-core:5.+")
     testImplementation("io.mockk:mockk:1.13.10")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+
+    // room
+    val room_version = "2.8.4"
+
+    implementation("androidx.room:room-runtime:$room_version")
+    kapt ("androidx.room:room-compiler:$room_version")
 }
 
 kapt {

@@ -1,19 +1,18 @@
 package com.example.tracking_steps.firebase
 
 import android.graphics.Bitmap
-import com.example.tracking_steps.data.FoodRepository
+import com.example.utility.data.FoodRepository
 import com.google.firebase.Firebase
 import com.google.firebase.ai.ai
 import com.google.firebase.ai.type.GenerativeBackend
 import com.google.firebase.ai.type.Schema
 import com.google.firebase.ai.type.content
 import com.google.firebase.ai.type.generationConfig
+import com.example.utility.data.FoodItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.json.JSONObject
-import timber.log.Timber
-import java.util.Date
 import javax.inject.Inject
 
 class GeminiModel @Inject constructor(
@@ -41,15 +40,6 @@ class GeminiModel @Inject constructor(
 
     val scope = CoroutineScope(Dispatchers.IO)
 
-    init {
-        scope.launch {
-            foodRepository.currentDayFoodItems.collect {
-                Timber.d("Food item: $it")
-            }
-        }
-    }
-
-
     suspend fun generateContentFromImage(imageBitmap: Bitmap): FoodItem? {
         val promptToSend = content {
             image(imageBitmap)
@@ -75,10 +65,3 @@ class GeminiModel @Inject constructor(
         }
     }
 }
-
-data class FoodItem (
-    val id: Int? = null,
-    val foodName: String,
-    val calories: Int,
-    val dateAdded: Date? = null
-)
