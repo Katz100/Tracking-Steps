@@ -79,7 +79,7 @@ fun HomePage(
         }
         LazyColumn(
             modifier = Modifier.fillMaxWidth()
-                .height(50.dp)
+                .height(200.dp)
         ) {
             items(currentDayFoodItems, key = { it.id.toString() }) { foodItem ->
                 Text("Food name: ${foodItem.foodName} Calories: ${foodItem.calories}")

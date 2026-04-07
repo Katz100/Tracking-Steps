@@ -17,17 +17,28 @@ class HomePageViewModel @Inject constructor(
 ): ViewModel() {
     val stepsTaken = StepCountProvider.currentSteps
     val caloriesBurned = StepCountProvider.caloriesBurned
-    val caloriesConsumed = StepCountProvider.caloriesConsumed
     val caloriesProgress = StepCountProvider.caloriesProgress
 
     private val _currentDayFoodItems = MutableStateFlow<List<FoodItem>>(emptyList())
     val currentDayFoodItems: StateFlow<List<FoodItem>> = _currentDayFoodItems
 
+    private val _caloriesConsumed = MutableStateFlow<Int>(2)
+    val caloriesConsumed: StateFlow<Int> = _caloriesConsumed
+
     init {
         viewModelScope.launch {
             foodRepository.currentDayFoodItems.collect {
                 _currentDayFoodItems.value = it
+                calculateTotalCaloriesConsumed()
             }
         }
+    }
+
+    private fun calculateTotalCaloriesConsumed() {
+        var total = 0
+        for (item in currentDayFoodItems.value) {
+            total += item.calories
+        }
+        _caloriesConsumed.value = total
     }
 }
