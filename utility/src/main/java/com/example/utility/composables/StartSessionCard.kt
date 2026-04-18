@@ -38,7 +38,7 @@ fun StartSessionCard(
 
     Card(
         modifier = modifier
-            .clickable { onClick() },
+            .clickable(onClick = onClick),
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent,
         )

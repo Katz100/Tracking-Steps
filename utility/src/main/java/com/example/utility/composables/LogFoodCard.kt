@@ -38,7 +38,7 @@ fun LogFoodCard(
 
     Card(
         modifier = modifier
-            .clickable { onClick() },
+            .clickable(onClick = onClick),
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent,
         )

@@ -12,6 +12,7 @@ import com.example.utility.data.FoodItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import javax.inject.Inject
 
@@ -30,34 +31,38 @@ class GeminiModel @Inject constructor(
     )
 
     private val model = Firebase.ai(backend = GenerativeBackend.googleAI())
-            .generativeModel(
-                modelName = "gemini-3-flash-preview",
-                generationConfig = generationConfig {
-                    responseMimeType = "application/json"
-                    responseSchema = jsonSchema
-                }
-            )
+        .generativeModel(
+            modelName = "gemini-3-flash-preview",
+            generationConfig = generationConfig {
+                responseMimeType = "application/json"
+                responseSchema = jsonSchema
+            }
+        )
 
     val scope = CoroutineScope(Dispatchers.IO)
 
     suspend fun generateContentFromImage(imageBitmap: Bitmap): FoodItem? {
-        val promptToSend = content {
-            image(imageBitmap)
-            text(CALORIES_PROMPT)
-        }
+        return withContext(Dispatchers.IO) {
+            val promptToSend = content {
+                image(imageBitmap)
+                text(CALORIES_PROMPT)
+            }
 
-        val response = model.generateContent(promptToSend).text
 
-        return if (response != null) {
-            val calories = JSONObject(response).getInt("calories")
-            val foodName = JSONObject(response).getString("foodName")
-            val foodItem = FoodItem(foodName = foodName, calories = calories)
-            addFoodItemToDB(foodItem)
-            return foodItem
-        } else {
-            null
+            val response = model.generateContent(promptToSend).text
+
+            if (response != null) {
+                val calories = JSONObject(response).getInt("calories")
+                val foodName = JSONObject(response).getString("foodName")
+                val foodItem = FoodItem(foodName = foodName, calories = calories)
+                addFoodItemToDB(foodItem)
+                foodItem
+            } else {
+                null
+            }
         }
     }
+
 
     fun addFoodItemToDB(foodItem: FoodItem) {
         scope.launch {

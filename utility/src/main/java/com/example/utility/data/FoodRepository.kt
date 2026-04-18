@@ -1,8 +1,10 @@
 package com.example.utility.data
 
 import com.example.utility.data.db.FoodDao
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import java.util.Date
 import javax.inject.Inject
 
@@ -22,7 +24,9 @@ class FoodRepositoryImpl @Inject constructor(
         }
 
     override suspend fun insertFoodItem(foodItem: FoodItem) {
-        foodDao.insertAll(foodItem.asEntity())
+        withContext(Dispatchers.IO) {
+            foodDao.insertAll(foodItem.asEntity())
+        }
     }
 
     fun FoodEntity.asDomain() = FoodItem(

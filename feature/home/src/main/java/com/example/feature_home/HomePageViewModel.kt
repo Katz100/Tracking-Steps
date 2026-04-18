@@ -22,7 +22,7 @@ class HomePageViewModel @Inject constructor(
     private val _currentDayFoodItems = MutableStateFlow<List<FoodItem>>(emptyList())
     val currentDayFoodItems: StateFlow<List<FoodItem>> = _currentDayFoodItems
 
-    private val _caloriesConsumed = MutableStateFlow<Int>(2)
+    private val _caloriesConsumed = MutableStateFlow<Int>(0)
     val caloriesConsumed: StateFlow<Int> = _caloriesConsumed
 
     init {
