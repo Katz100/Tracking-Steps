@@ -7,18 +7,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.ui.Modifier
 import com.example.tracking_steps.ui.theme.TrackingStepsTheme
-import androidx.health.connect.client.records.metadata.Device
-import com.example.feature_home.Home
 import com.example.utility.health_connect.HealthConnectService
 import dagger.hilt.android.AndroidEntryPoint
-import java.time.Instant
-import java.time.ZoneOffset
 import javax.inject.Inject
-import androidx.health.connect.client.records.metadata.Metadata
 import androidx.lifecycle.lifecycleScope
 import com.example.utility.sensor.StepSensorManager
 import kotlinx.coroutines.launch
@@ -34,9 +26,7 @@ import android.provider.MediaStore
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.feature_home.HomePage
 import com.example.tracking_steps.firebase.GeminiModel
 import com.example.tracking_steps.nav.Nav
 import com.example.utility.foreground.StepCountProvider
@@ -125,15 +115,6 @@ class MainActivity : ComponentActivity() {
 
         createNotificationChannel(this)
         activityRecognitionPermissionLauncher.launch(Manifest.permission.ACTIVITY_RECOGNITION)
-//
-//        // Provide a prompt that contains text
-//        val prompt = "Write a story about a magic backpack."
-//
-//        lifecycleScope.launch {
-//            val response = model.generateContent(prompt)
-//            Timber.i(response.text)
-//        }
-
         setContent {
 
             val stepsCounter = viewModel.stepsCounter.collectAsStateWithLifecycle().value
@@ -171,107 +152,6 @@ class MainActivity : ComponentActivity() {
                         startForegroundService(intent)
                     }
                 )
-//                Scaffold(
-//                    modifier = Modifier,
-//                    containerColor = Color.White
-//                ) { innerPadding ->
-//                    HomePage(
-//                        modifier = Modifier.padding(innerPadding),
-//                        onLogFoodClicked = {
-//                            dispatchTakeImageIntent()
-//                        },
-//                        onStartWalkClicked = {
-//                            val intent = Intent(this@MainActivity, StepTrackingService::class.java).apply {
-//                                putExtra("steps", 0)
-//                                putExtra("goal", goal.toIntOrNull() ?: 100)
-//                                putExtra("weight", weightTxt.toIntOrNull() ?: 180)
-//                            }
-//                            startForegroundService(intent)
-//                        }
-//                    )
-//                    Home(
-//                        modifier = Modifier.padding(innerPadding),
-//                        steps = stepsCounter,
-//                        onRequestPermissions = {
-//                            lifecycleScope.launch {
-//                                if (!writeStepsService.hasAllPermissions()) {
-//                                    requestPermissions.launch(HealthConnectService.PERMISSIONS)
-//                                } else {
-//                                    Toast.makeText(
-//                                        this@MainActivity, "Permissions already granted",
-//                                        Toast.LENGTH_SHORT
-//                                    ).show()
-//                                }
-//                            }
-//                        },
-//                        onWriteSteps = { steps ->
-//                            lifecycleScope.launch {
-//                                val metadata = Metadata.autoRecorded(
-//                                    device = Device(
-//                                        manufacturer = Build.MANUFACTURER,
-//                                        model = Build.MODEL,
-//                                        type = Device.TYPE_PHONE
-//                                    )
-//                                )
-//
-//                                val startTime = Instant.now().minusSeconds(3600)
-//                                val endTime = Instant.now()
-//                                Timber.d(endTime.toString())
-//
-//                                val startOffset =
-//                                    ZoneOffset.systemDefault().rules.getOffset(startTime)
-//                                val endOffset = ZoneOffset.systemDefault().rules.getOffset(endTime)
-//
-//                                if (writeStepsService.hasAllPermissions()) {
-//                                    val response = writeStepsService.writeStepsData(
-//                                        startTime = startTime,
-//                                        endTime = endTime,
-//                                        startZoneOffset = startOffset,
-//                                        endZoneOffset = endOffset,
-//                                        metadata = metadata,
-//                                        countOfSteps = steps
-//                                    )
-//                                    Toast.makeText(
-//                                        this@MainActivity,
-//                                        response?.recordIdsList.toString(),
-//                                        Toast.LENGTH_SHORT
-//                                    ).show()
-//                                } else {
-//                                    Toast.makeText(
-//                                        this@MainActivity,
-//                                        "Permission for steps must be granted",
-//                                        Toast.LENGTH_SHORT
-//                                    ).show()
-//                                }
-//                            }
-//                        },
-//                        goal = currentGoal,
-//                        launchForeground = {
-//                            val intent = Intent(this@MainActivity, StepTrackingService::class.java).apply {
-//                                putExtra("steps", 0)
-//                                putExtra("goal", goal.toIntOrNull() ?: 100)
-//                                putExtra("weight", weightTxt.toIntOrNull() ?: 180)
-//                            }
-//                            lifecycleScope.launch {
-//                                dataStore.setNewWeight(weightTxt.toIntOrNull() ?: 180)
-//                            }
-//                            startForegroundService(intent)
-//                        },
-//                        stopForeground = {
-//                            stopService(Intent(this@MainActivity, StepTrackingService::class.java))
-//                        },
-//                        requestForeground = {
-//                            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-//                        },
-//                        onGoalChange = { viewModel.onGoalChange(it) },
-//                        goalValue = goal,
-//                        weightValue = weightTxt,
-//                        onWeightChange = { viewModel.onWeightChange(it) },
-//                        takePhoto = {
-//                            dispatchTakeImageIntent()
-//                        }
-//                    )
-//                }
             }
         }
     }
