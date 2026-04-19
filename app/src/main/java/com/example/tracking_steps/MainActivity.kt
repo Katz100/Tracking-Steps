@@ -39,13 +39,8 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var writeStepsService: HealthConnectService
 
-//    @Inject
-//    lateinit var dataStore: DataStore
-
     @Inject
     lateinit var model: GeminiModel
-
-    val viewModel: MainViewModel by viewModels()
 
     val requestPermissions =
         registerForActivityResult(HealthConnectService.requestPermissionsForHealthConnect) { granted ->

@@ -23,6 +23,7 @@ import com.example.utility.composables.Circular
 import com.example.utility.composables.LogFoodCard
 import com.example.utility.composables.StartSessionCard
 
+@Deprecated("Use HomePage instead")
 @Composable
 fun Home(
     modifier: Modifier = Modifier,
