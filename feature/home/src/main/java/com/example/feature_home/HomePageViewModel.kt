@@ -7,41 +7,36 @@ import com.example.utility.data.FoodItem
 import com.example.utility.data.FoodRepository
 import com.example.utility.foreground.StepCountProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
 class HomePageViewModel @Inject constructor(
-    private val foodRepository: FoodRepository,
-    private val dataStore: DataStore,
+    foodRepository: FoodRepository,
+    dataStore: DataStore,
 ): ViewModel() {
     val stepsTaken = StepCountProvider.currentSteps
     val caloriesBurned = StepCountProvider.caloriesBurned
     val caloriesProgress = StepCountProvider.caloriesProgress
     val weight = dataStore.weightFlow()
 
-    private val _currentDayFoodItems = MutableStateFlow<List<FoodItem>>(emptyList())
-    val currentDayFoodItems: StateFlow<List<FoodItem>> = _currentDayFoodItems
+    val currentDayFoodItems = foodRepository.currentDayFoodItems.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = emptyList()
+    )
 
-    private val _caloriesConsumed = MutableStateFlow<Int>(0)
-    val caloriesConsumed: StateFlow<Int> = _caloriesConsumed
+    val caloriesConsumed: StateFlow<Int> = currentDayFoodItems
+        .map { foodItems -> calculateTotalCaloriesConsumed(foodItems) }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = 0
+        )
 
-    init {
-        viewModelScope.launch {
-            foodRepository.currentDayFoodItems.collect {
-                _currentDayFoodItems.value = it
-                calculateTotalCaloriesConsumed()
-            }
-        }
-    }
-
-    private fun calculateTotalCaloriesConsumed() {
-        var total = 0
-        for (item in currentDayFoodItems.value) {
-            total += item.calories
-        }
-        _caloriesConsumed.value = total
-    }
+    private fun calculateTotalCaloriesConsumed(foodItems: List<FoodItem>): Int =
+        foodItems.sumOf { foodItem -> foodItem.calories }
 }
