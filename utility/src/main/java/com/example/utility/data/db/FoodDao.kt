@@ -15,6 +15,9 @@ interface FoodDao {
     @Delete
     fun deleteFoodItem(foodItem: FoodEntity)
 
-   @Query("SELECT * FROM food_item WHERE date(date_added / 1000, 'unixepoch') = date('now')")
+   @Query("SELECT *\n" +
+           "FROM food_item\n" +
+           "WHERE date_added >= strftime('%s', 'now', 'localtime', 'start of day') * 1000\n" +
+           "  AND date_added <  strftime('%s', 'now', 'localtime', 'start of day', '+1 day') * 1000;")
    fun getFoodItemsCreatedToday(): Flow<List<FoodEntity>>
 }
