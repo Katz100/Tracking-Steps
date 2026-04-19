@@ -41,7 +41,7 @@ fun HomePage(
     val caloriesConsumed = viewModel.caloriesConsumed.collectAsState().value
     val caloriesProgress = viewModel.caloriesProgress.collectAsState().value
     val currentDayFoodItems = viewModel.currentDayFoodItems.collectAsState().value
-    val weight = viewModel.weight.collectAsState(initial = 160).value
+    val weight = viewModel.weight.collectAsState().value
 
     Column(
         modifier = modifier.fillMaxSize()

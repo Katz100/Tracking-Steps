@@ -21,7 +21,12 @@ class HomePageViewModel @Inject constructor(
     val stepsTaken = StepCountProvider.currentSteps
     val caloriesBurned = StepCountProvider.caloriesBurned
     val caloriesProgress = StepCountProvider.caloriesProgress
-    val weight = dataStore.weightFlow()
+
+    val weight = dataStore.weightFlow().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = 0
+    )
 
     val currentDayFoodItems = foodRepository.currentDayFoodItems.stateIn(
         scope = viewModelScope,
