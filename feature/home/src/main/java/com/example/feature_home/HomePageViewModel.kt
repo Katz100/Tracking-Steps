@@ -2,6 +2,7 @@ package com.example.feature_home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.utility.data.DataStore
 import com.example.utility.data.FoodItem
 import com.example.utility.data.FoodRepository
 import com.example.utility.foreground.StepCountProvider
@@ -14,10 +15,12 @@ import javax.inject.Inject
 @HiltViewModel
 class HomePageViewModel @Inject constructor(
     private val foodRepository: FoodRepository,
+    private val dataStore: DataStore,
 ): ViewModel() {
     val stepsTaken = StepCountProvider.currentSteps
     val caloriesBurned = StepCountProvider.caloriesBurned
     val caloriesProgress = StepCountProvider.caloriesProgress
+    val weight = dataStore.weightFlow()
 
     private val _currentDayFoodItems = MutableStateFlow<List<FoodItem>>(emptyList())
     val currentDayFoodItems: StateFlow<List<FoodItem>> = _currentDayFoodItems

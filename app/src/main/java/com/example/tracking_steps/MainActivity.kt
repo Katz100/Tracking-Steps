@@ -39,8 +39,8 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var writeStepsService: HealthConnectService
 
-    @Inject
-    lateinit var dataStore: DataStore
+//    @Inject
+//    lateinit var dataStore: DataStore
 
     @Inject
     lateinit var model: GeminiModel
@@ -116,41 +116,11 @@ class MainActivity : ComponentActivity() {
         createNotificationChannel(this)
         activityRecognitionPermissionLauncher.launch(Manifest.permission.ACTIVITY_RECOGNITION)
         setContent {
-
-            val stepsCounter = viewModel.stepsCounter.collectAsStateWithLifecycle().value
-            val goal = viewModel.goal.collectAsStateWithLifecycle().value
-            val currentGoal = viewModel.currentGoal.collectAsStateWithLifecycle().value
-            val weightTxt = viewModel.weightTxt.collectAsStateWithLifecycle().value
-
-            LaunchedEffect(Unit) {
-                dataStore.weightFlow().collect {
-                    Timber.i("Collecting ${it.toString()}")
-                }
-            }
-
-            LaunchedEffect(stepsCounter) {
-                if (stepsCounter == currentGoal) {
-                    Timber.d("stepsCounter: $stepsCounter \n currentGoal: $currentGoal")
-                    Toast.makeText(this@MainActivity, "You met your goal", Toast.LENGTH_SHORT)
-                        .show()
-                    StepCountProvider.resetSessionValues()
-                }
-            }
-
             TrackingStepsTheme {
                 Nav(
                     onLogFoodClicked = {
                         dispatchTakeImageIntent()
                     },
-                    onStartWalkClicked = {
-                        val intent =
-                            Intent(this@MainActivity, StepTrackingService::class.java).apply {
-                                putExtra("steps", 0)
-                                putExtra("goal", goal.toIntOrNull() ?: 100)
-                                putExtra("weight", weightTxt.toIntOrNull() ?: 180)
-                            }
-                        startForegroundService(intent)
-                    }
                 )
             }
         }

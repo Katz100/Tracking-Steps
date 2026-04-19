@@ -32,7 +32,7 @@ import com.example.utility.composables.StepsTakenCard
 fun HomePage(
     modifier: Modifier = Modifier,
     onLogFoodClicked: () -> Unit = {},
-    onStartWalkClicked: () -> Unit = {},
+    onStartWalkClicked: (Int) -> Unit = {},
     viewModel: HomePageViewModel = hiltViewModel()
 ) {
     val scrollState = rememberScrollState()
@@ -41,6 +41,7 @@ fun HomePage(
     val caloriesConsumed = viewModel.caloriesConsumed.collectAsState().value
     val caloriesProgress = viewModel.caloriesProgress.collectAsState().value
     val currentDayFoodItems = viewModel.currentDayFoodItems.collectAsState().value
+    val weight = viewModel.weight.collectAsState(initial = 160).value
 
     Column(
         modifier = modifier.fillMaxSize()
@@ -74,7 +75,7 @@ fun HomePage(
             Spacer(modifier = Modifier.weight(1f))
             StartSessionCard(
                 modifier = Modifier.size(width = 120.dp, height = 100.dp),
-                onClick = onStartWalkClicked
+                onClick = { onStartWalkClicked(weight) }
             )
         }
         LazyColumn(

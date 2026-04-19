@@ -100,10 +100,6 @@ dependencies {
     // timber
     implementation ("com.jakewharton.timber:timber:5.0.1")
 
-    // Preferences DataStore (SharedPreferences like APIs)
-    implementation("androidx.datastore:datastore-preferences:1.2.1")
-    implementation("androidx.datastore:datastore:1.2.1")
-
     // firebase
     implementation(platform("com.google.firebase:firebase-bom:34.11.0"))
     implementation("com.google.firebase:firebase-analytics")

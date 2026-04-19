@@ -1,5 +1,6 @@
 package com.example.tracking_steps.nav
 
+import android.content.Intent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -10,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -19,14 +21,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.feature_home.HomePage
+import com.example.utility.foreground.StepTrackingService
+import timber.log.Timber
 
 @Composable
 fun Nav(
     onLogFoodClicked: () -> Unit,
-    onStartWalkClicked: () -> Unit,
 ) {
     val navController = rememberNavController()
     val currentDestination = navController.currentBackStackEntryAsState().value?.destination
+    val context = LocalContext.current
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -69,7 +73,16 @@ fun Nav(
             composable<Screen.Home> {
                 HomePage(
                     onLogFoodClicked = onLogFoodClicked,
-                    onStartWalkClicked = onStartWalkClicked
+                    onStartWalkClicked = { weight ->
+                        val intent =
+                            Intent(context, StepTrackingService::class.java).apply {
+                                putExtra("steps", 0)
+                                putExtra("goal", 0) // todo
+                                putExtra("weight", weight)
+                            }
+                        Timber.d("weight: $weight")
+                        context.startForegroundService(intent)
+                    }
                 )
             }
             composable<Screen.Goals> { backStackEntry ->
