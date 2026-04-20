@@ -1,6 +1,11 @@
 package com.example.tracking_steps.nav
 
 import android.content.Intent
+import android.Manifest
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,6 +33,7 @@ import com.example.utility.composables.ValueStepper
 import com.example.utility.foreground.StepTrackingService
 import timber.log.Timber
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun Nav(
     onLogFoodClicked: () -> Unit,
@@ -35,6 +41,16 @@ fun Nav(
     val navController = rememberNavController()
     val currentDestination = navController.currentBackStackEntryAsState().value?.destination
     val context = LocalContext.current
+
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            Timber.i("Permissions for notifications granted")
+        } else {
+            Timber.i("Permissions for notification denied")
+        }
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -78,6 +94,7 @@ fun Nav(
                 HomePage(
                     onLogFoodClicked = onLogFoodClicked,
                     onStartWalkClicked = { weight ->
+                        notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                         val intent =
                             Intent(context, StepTrackingService::class.java).apply {
                                 putExtra("steps", 0)

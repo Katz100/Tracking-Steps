@@ -60,16 +60,6 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-    private val requestPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        if (isGranted) {
-            Timber.i("Permissions for notifications granted")
-        } else {
-            Timber.i("Permissions for notification denied")
-        }
-    }
-
     val REQUEST_IMAGE_CAPTURE = 1
 
     private fun dispatchTakeImageIntent() {
