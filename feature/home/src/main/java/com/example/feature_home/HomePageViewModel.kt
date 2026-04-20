@@ -27,17 +27,19 @@ class HomePageViewModel @Inject constructor(
     val caloriesBurned = metricsRepository.caloriesBurned
     // val caloriesProgress = StepCountProvider.caloriesProgress
 
-    val weight: StateFlow<Int> = metricsRepository.weight(
-        coroutineScope = viewModelScope,
-        initialValue = 0
+    val weight: StateFlow<Int> = metricsRepository.weight.stateIn(
+        scope = viewModelScope,
+        initialValue = 0,
+        started = SharingStarted.Eagerly
     )
 
-    val calorieProgress: StateFlow<Float> = metricsRepository.calorieProgress(
-        initialValue = 0f,
-        coroutineScope = viewModelScope,
-    ) { caloriesBurnt, calorieGoal ->
+    val calorieProgress: StateFlow<Float> = metricsRepository.calorieProgress { caloriesBurnt, calorieGoal ->
         calculateProgressForCalorieGoal(caloriesBurnt, calorieGoal)
-    }
+    }.stateIn(
+        scope = viewModelScope,
+        initialValue = 0f,
+        started = SharingStarted.Eagerly
+    )
 
     val currentDayFoodItems: StateFlow<List<FoodItem>> = foodRepository.currentDayFoodItems.stateIn(
         scope = viewModelScope,
