@@ -3,19 +3,13 @@ package com.example.feature_home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.feature_home.data.MetricsRepository
-import com.example.utility.data.DataStore
 import com.example.utility.data.FoodItem
 import com.example.utility.data.FoodRepository
-import com.example.utility.foreground.StepCountProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,7 +19,6 @@ class HomePageViewModel @Inject constructor(
 ): ViewModel() {
     val stepsTaken = metricsRepository.stepTaken
     val caloriesBurned = metricsRepository.caloriesBurned
-    // val caloriesProgress = StepCountProvider.caloriesProgress
 
     val weight: StateFlow<Int> = metricsRepository.weight.stateIn(
         scope = viewModelScope,
@@ -56,7 +49,6 @@ class HomePageViewModel @Inject constructor(
         )
 
     private fun calculateProgressForCalorieGoal(caloriesBurnt: Int, calorieGoal: Int): Float {
-        Timber.i("Calculating progress. Calories burnt: $caloriesBurnt, calorie goal: $calorieGoal")
         if (calorieGoal == 0) return 0f
         return caloriesBurnt.toFloat() / calorieGoal.toFloat()
     }

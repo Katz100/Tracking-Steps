@@ -2,12 +2,9 @@ package com.example.feature_home.data
 
 import com.example.utility.data.DataStore
 import com.example.utility.foreground.StepCountProvider
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 interface MetricsRepository {
