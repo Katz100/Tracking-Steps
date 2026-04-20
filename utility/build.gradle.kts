@@ -93,6 +93,9 @@ dependencies {
     // Preferences DataStore (SharedPreferences like APIs)
     implementation("androidx.datastore:datastore-preferences:1.2.1")
     implementation("androidx.datastore:datastore:1.2.1")
+
+    // Icons
+    implementation("androidx.compose.material:material-icons-core")
 }
 
 kapt {

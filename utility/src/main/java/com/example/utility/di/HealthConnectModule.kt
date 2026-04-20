@@ -16,15 +16,19 @@ import javax.inject.Singleton
 @Module
 object HealthConnectModule {
 
-    const val IS_EMULATOR = true
+    @Provides
+    fun provideIsEmulatorBoolean(): Boolean {
+        return true
+    }
 
     @Provides
     @Singleton
     fun provideSensorProvider(
         systemSensorProvider: SystemSensorProvider,
         systemSensorProviderEmulator: SystemSensorProviderEmulator,
+        isEmulator: Boolean
     ): SensorProvider {
-        return if (IS_EMULATOR) {
+        return if (isEmulator) {
             systemSensorProviderEmulator
         } else {
             systemSensorProvider

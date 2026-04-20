@@ -2,6 +2,8 @@ package com.example.tracking_steps.nav
 
 import android.content.Intent
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -13,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -21,6 +24,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.feature_home.HomePage
+import com.example.utility.composables.ValueStepper
 import com.example.utility.foreground.StepTrackingService
 import timber.log.Timber
 
@@ -85,8 +89,15 @@ fun Nav(
                     }
                 )
             }
-            composable<Screen.Goals> { backStackEntry ->
-                Text("Goals")
+            composable<Screen.Goals> {
+                ValueStepper(
+                    modifier = Modifier.fillMaxWidth()
+                        .height(100.dp)
+                        .padding(16.dp),
+                    onPlusIconClicked = {},
+                    onSubtractIconClicked = {},
+                    value = 2000
+                )
             }
             composable<Screen.Settings> {
                Text("Settings")

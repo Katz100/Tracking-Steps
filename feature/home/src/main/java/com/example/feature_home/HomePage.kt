@@ -45,9 +45,6 @@ fun HomePage(
     val currentDayFoodItems = viewModel.currentDayFoodItems.collectAsState().value
     val weight = viewModel.weight.collectAsState().value
 
-    LaunchedEffect(calorieProgress) {
-        Log.d("TAG", "Calorie progress: ${calorieProgress}")
-    }
     Column(
         modifier = modifier.fillMaxSize()
             .verticalScroll(scrollState),
