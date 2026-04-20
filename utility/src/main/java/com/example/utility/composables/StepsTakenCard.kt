@@ -29,7 +29,6 @@ fun StepsTakenCard(
 ) {
     Card(
         modifier = modifier,
-        colors = CardDefaults.cardColors(containerColor = colorResource(R.color.cardColor))
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),

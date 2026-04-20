@@ -36,7 +36,7 @@ class SystemSensorProviderEmulator @Inject constructor(): SensorProvider {
     override fun registerListener(listener: StepSensorListener) {
         job = scope.launch {
             while (true) {
-                delay(100)
+                delay(500)
                 listener.onTotalStepCountChanged(1000)
             }
         }

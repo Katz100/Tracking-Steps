@@ -1,7 +1,10 @@
 package com.example.utility.composables
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -21,9 +25,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.utility.R
 
 @Composable
 fun ValueStepper(
@@ -32,7 +41,11 @@ fun ValueStepper(
     onPlusIconClicked: () -> Unit,
     onSubtractIconClicked: () -> Unit,
     value: Int,
+    img: Painter,
+    imgText: String
 ) {
+    val haptics = LocalHapticFeedback.current
+
     Card(modifier = modifier) {
         Row(
             modifier = Modifier.fillMaxSize(),
@@ -51,7 +64,10 @@ fun ValueStepper(
                     shape = CircleShape
                     )
                 ,
-                onClick = onSubtractIconClicked,
+                onClick = {
+                    haptics.performHapticFeedback(HapticFeedbackType.Confirm)
+                    onSubtractIconClicked()
+                },
             ) {
                 Icon(
                     imageVector = Icons.Default.ArrowDropDown,
@@ -60,10 +76,31 @@ fun ValueStepper(
             }
             Spacer(modifier = Modifier.weight(1f))
 
-            Text(
-                text = value.toString(),
-                style = textStyle
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    modifier = Modifier.padding(bottom = 4.dp),
+                    text = value.toString(),
+                    style = textStyle
+                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = img,
+                        contentDescription = "Img",
+                        modifier = Modifier.size(25.dp)
+                    )
+                    Text(
+                        modifier = Modifier.padding(start = 4.dp),
+                        text = imgText,
+                        style = TextStyle(
+                            color = Color.Gray
+                        )
+                    )
+                }
+            }
 
             Spacer(modifier = Modifier.weight(1f))
 
@@ -80,7 +117,10 @@ fun ValueStepper(
                         shape = CircleShape
                     )
                 ,
-                onClick = onPlusIconClicked,
+                onClick = {
+                    haptics.performHapticFeedback(HapticFeedbackType.Confirm)
+                    onPlusIconClicked()
+                },
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -96,13 +136,15 @@ fun ValueStepper(
 fun ValueStepperPreview() {
     ValueStepper(
         modifier = Modifier.fillMaxWidth()
-            .height(100.dp)
+            .height(150.dp)
             .padding(16.dp),
         onPlusIconClicked = {},
-        value = 2000,
+        value = 200,
         onSubtractIconClicked = {},
         textStyle = MaterialTheme.typography.titleLarge.copy(
             color = MaterialTheme.colorScheme.onSurface
-        )
+        ),
+        img = painterResource(R.drawable.calories),
+        imgText = "kCal"
     )
 }

@@ -42,9 +42,6 @@ class StepTrackingService : Service() {
         const val CALORIES_CONSTANT = 0.00023
     }
 
-    val scope = CoroutineScope(Dispatchers.IO)
-    var job: Job? = null
-
     @Inject
     lateinit var stepSensorManager: StepSensorManager
 
@@ -89,19 +86,11 @@ class StepTrackingService : Service() {
     var currentSteps = -1
     var stepGoal = -1
     var weight = -1
-    var caloriesConsumed = 0
     var sessionState = SessionState.RESUME
 
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     override fun onCreate() {
         super.onCreate()
-
-        job = scope.launch {
-            StepCountProvider.caloriesConsumed.collect {
-                caloriesConsumed = it
-                Timber.d("Calories consumed updated $caloriesConsumed")
-            }
-        }
 
         stepSensorManager.onActiveStepDetected = {
             Timber.i("Active step detected")
@@ -129,11 +118,6 @@ class StepTrackingService : Service() {
                     false
                 )
                 val caloriesBurned = (currentSteps * weight * CALORIES_CONSTANT).roundToInt()
-                if (caloriesConsumed != 0) {
-                    val caloriesProgress = (caloriesBurned / caloriesConsumed).toFloat()
-                    StepCountProvider.updateCaloriesProgress(caloriesProgress)
-                    Timber.d("Calories Progress: $caloriesProgress")
-                }
                 StepCountProvider.updateCaloriesBurned(caloriesBurned)
 
                 notificationLayoutExpanded.setTextViewText(
@@ -156,7 +140,6 @@ class StepTrackingService : Service() {
         super.onDestroy()
         stepSensorManager.unregisterListener()
         Timber.i("Ending job for collecting calories from food items")
-        job?.cancel()
         /* Maybe should use work manager to write steps/or uncomment below to just write steps for sessions */
 
 //        scope.launch {
