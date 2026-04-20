@@ -17,14 +17,28 @@ class DataStore @Inject constructor(
 ) {
     val USER_WEIGHT = intPreferencesKey("weight")
 
+    val CALORIE_GOAL = intPreferencesKey("calorie_goal")
+
     fun weightFlow(): Flow<Int> = context.dataStore.data.map { preferences ->
         preferences[USER_WEIGHT] ?: 0
+    }
+
+    fun calorieFlow(): Flow<Int> = context.dataStore.data.map { preferences ->
+        preferences[CALORIE_GOAL] ?: 0
     }
 
     suspend fun setNewWeight(weight: Int) {
         context.dataStore.updateData {
             it.toMutablePreferences().also { preferences ->
                 preferences[USER_WEIGHT] = weight
+            }
+        }
+    }
+
+    suspend fun setNewCalorieGoal(goal: Int) {
+        context.dataStore.updateData {
+            it.toMutablePreferences().also { preferences ->
+                preferences[CALORIE_GOAL] = goal
             }
         }
     }

@@ -132,6 +132,7 @@ class StepTrackingService : Service() {
                 if (caloriesConsumed != 0) {
                     val caloriesProgress = (caloriesBurned / caloriesConsumed).toFloat()
                     StepCountProvider.updateCaloriesProgress(caloriesProgress)
+                    Timber.d("Calories Progress: $caloriesProgress")
                 }
                 StepCountProvider.updateCaloriesBurned(caloriesBurned)
 

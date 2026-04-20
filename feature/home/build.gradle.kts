@@ -70,6 +70,9 @@ dependencies {
     androidTestImplementation("com.google.dagger:hilt-android-testing:$hiltVersion")
     kaptTest("com.google.dagger:hilt-android-compiler:$hiltVersion")
     kaptAndroidTest("com.google.dagger:hilt-android-compiler:$hiltVersion")
+
+    // timber
+    implementation ("com.jakewharton.timber:timber:5.0.1")
 }
 
 kapt {
