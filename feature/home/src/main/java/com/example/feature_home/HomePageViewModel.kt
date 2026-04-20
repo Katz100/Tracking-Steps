@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -49,6 +50,7 @@ class HomePageViewModel @Inject constructor(
         )
 
     private fun calculateProgressForCalorieGoal(caloriesBurnt: Int, calorieGoal: Int): Float {
+        Timber.d("Calculating: Burnt: $caloriesBurnt Goal: $calorieGoal")
         if (calorieGoal == 0) return 0f
         return caloriesBurnt.toFloat() / calorieGoal.toFloat()
     }

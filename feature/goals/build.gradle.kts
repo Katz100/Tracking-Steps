@@ -55,6 +55,12 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    // utility
+    implementation(project(":utility"))
+
+    // home (temp)
+    implementation(project(":home"))
+
     // hilt
     val hiltVersion = "2.57.1"
 

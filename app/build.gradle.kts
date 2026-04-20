@@ -96,6 +96,8 @@ dependencies {
     implementation(project(":home"))
     // utility
     implementation(project(":utility"))
+    // goals
+    implementation(project(":goals"))
 
     // timber
     implementation ("com.jakewharton.timber:timber:5.0.1")

@@ -42,4 +42,20 @@ class DataStore @Inject constructor(
             }
         }
     }
+
+    suspend fun incrementCalorieGoal(incrementValue: Int) {
+        context.dataStore.updateData {
+            it.toMutablePreferences().also { preferences ->
+                preferences[CALORIE_GOAL] = preferences[CALORIE_GOAL]?.plus(incrementValue) ?: 0
+            }
+        }
+    }
+
+    suspend fun decrementCalorieGoal(decrementValue: Int) {
+        context.dataStore.updateData {
+            it.toMutablePreferences().also { preferences ->
+                preferences[CALORIE_GOAL] = preferences[CALORIE_GOAL]?.minus(decrementValue) ?: 0
+            }
+        }
+    }
 }

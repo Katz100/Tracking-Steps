@@ -29,6 +29,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.feature_home.HomePage
+import com.example.goals.GoalsPage
 import com.example.utility.composables.ValueStepper
 import com.example.utility.foreground.StepTrackingService
 import timber.log.Timber
@@ -107,14 +108,7 @@ fun Nav(
                 )
             }
             composable<Screen.Goals> {
-                ValueStepper(
-                    modifier = Modifier.fillMaxWidth()
-                        .height(100.dp)
-                        .padding(16.dp),
-                    onPlusIconClicked = {},
-                    onSubtractIconClicked = {},
-                    value = 2000
-                )
+                GoalsPage()
             }
             composable<Screen.Settings> {
                Text("Settings")
