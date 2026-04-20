@@ -2,11 +2,13 @@ package com.example.feature_home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.feature_home.data.MetricsRepository
 import com.example.utility.data.DataStore
 import com.example.utility.data.FoodItem
 import com.example.utility.data.FoodRepository
 import com.example.utility.foreground.StepCountProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -19,25 +21,23 @@ import javax.inject.Inject
 @HiltViewModel
 class HomePageViewModel @Inject constructor(
     foodRepository: FoodRepository,
-    dataStore: DataStore,
+    metricsRepository: MetricsRepository,
 ): ViewModel() {
-    val stepsTaken = StepCountProvider.currentSteps
-    val caloriesBurned = StepCountProvider.caloriesBurned
+    val stepsTaken = metricsRepository.stepTaken
+    val caloriesBurned = metricsRepository.caloriesBurned
     // val caloriesProgress = StepCountProvider.caloriesProgress
 
-    val weight: StateFlow<Int> = dataStore.weightFlow().stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.Eagerly,
+    val weight: StateFlow<Int> = metricsRepository.weight(
+        coroutineScope = viewModelScope,
         initialValue = 0
     )
 
-    val calorieProgress: StateFlow<Float> = combine(dataStore.calorieFlow(), caloriesBurned) { calorieGoal, caloriesBurnt ->
+    val calorieProgress: StateFlow<Float> = metricsRepository.calorieProgress(
+        initialValue = 0f,
+        coroutineScope = viewModelScope,
+    ) { caloriesBurnt, calorieGoal ->
         calculateProgressForCalorieGoal(caloriesBurnt, calorieGoal)
-    }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Eagerly,
-            initialValue = 0f
-        )
+    }
 
     val currentDayFoodItems: StateFlow<List<FoodItem>> = foodRepository.currentDayFoodItems.stateIn(
         scope = viewModelScope,
@@ -52,14 +52,6 @@ class HomePageViewModel @Inject constructor(
             started = SharingStarted.Eagerly,
             initialValue = 0
         )
-
-    // temp
-    init {
-        viewModelScope.launch {
-            dataStore.setNewCalorieGoal(100)
-            Timber.i("Set new calorie goal")
-        }
-    }
 
     private fun calculateProgressForCalorieGoal(caloriesBurnt: Int, calorieGoal: Int): Float {
         Timber.i("Calculating progress. Calories burnt: $caloriesBurnt, calorie goal: $calorieGoal")
