@@ -24,6 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.time.Instant
@@ -86,7 +87,6 @@ class StepTrackingService : Service() {
     var currentSteps = -1
     var stepGoal = -1
     var weight = -1
-    var sessionState = SessionState.RESUME
 
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     override fun onCreate() {
@@ -102,7 +102,7 @@ class StepTrackingService : Service() {
         }
 
         stepSensorManager.onTotalStepCountChanged = {
-            if (sessionState == SessionState.RESUME) {
+            if (StepCountProvider.sessionState.value == SessionState.RESUME) {
                 currentSteps++
                 StepCountProvider.updateCurrentSteps(currentSteps)
 
@@ -139,7 +139,8 @@ class StepTrackingService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         stepSensorManager.unregisterListener()
-        Timber.i("Ending job for collecting calories from food items")
+        StepCountProvider.setSessionState(SessionState.STOPPED)
+        Timber.i("Service has been destroyed, performing cleanup...")
         /* Maybe should use work manager to write steps/or uncomment below to just write steps for sessions */
 
 //        scope.launch {
@@ -182,7 +183,7 @@ class StepTrackingService : Service() {
 
         if (intent.action == ACTION_PAUSE_SESSION) {
             Timber.i("User has paused the session from the notification, returning early from onStartCommand")
-            sessionState = SessionState.PAUSE
+            StepCountProvider.setSessionState(SessionState.PAUSE)
             updateNotification(this)
             stepSensorManager.unregisterListener()
             return START_STICKY
@@ -190,12 +191,12 @@ class StepTrackingService : Service() {
 
         if (intent.action == ACTION_RESUME_SESSION) {
             Timber.i("User has resumed session from notification")
-            sessionState = SessionState.RESUME
+            StepCountProvider.setSessionState(SessionState.RESUME)
             stepSensorManager.registerListener()
             return START_STICKY
         }
 
-        sessionState = SessionState.RESUME
+        StepCountProvider.setSessionState(SessionState.RESUME)
         startTime = Instant.now()
         currentSteps = intent.getIntExtra("steps", 0)
         stepGoal = intent.getIntExtra("goal", 0)
@@ -273,7 +274,7 @@ class StepTrackingService : Service() {
                 context, Manifest.permission.POST_NOTIFICATIONS
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            if (sessionState == SessionState.RESUME) {
+            if (StepCountProvider.sessionState.value == SessionState.RESUME) {
                 val updatedNotification = NotificationCompat.Builder(context, CHANNEL_ID)
                     .setContentTitle("Steps")
                     .setSmallIcon(R.drawable.ic_launcher_background)
@@ -300,9 +301,4 @@ class StepTrackingService : Service() {
             Timber.e("Unable to update notification due to permissions not being granted")
         }
     }
-}
-
-enum class SessionState {
-    PAUSE,
-    RESUME,
 }

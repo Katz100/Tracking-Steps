@@ -17,6 +17,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,12 +29,14 @@ import com.example.utility.composables.CaloriesConsumedCard
 import com.example.utility.composables.LogFoodCard
 import com.example.utility.composables.StartSessionCard
 import com.example.utility.composables.StepsTakenCard
+import com.example.utility.foreground.SessionState
+import timber.log.Timber
 
 @Composable
 fun HomePage(
     modifier: Modifier = Modifier,
     onLogFoodClicked: () -> Unit = {},
-    onStartWalkClicked: (Int, Int) -> Unit = {a, b ->},
+    onStartWalkClicked: (Int, Int, SessionState) -> Unit = {a, b, c ->},
     viewModel: HomePageViewModel = hiltViewModel()
 ) {
     val scrollState = rememberScrollState()
@@ -44,6 +47,11 @@ fun HomePage(
     val currentDayFoodItems = viewModel.currentDayFoodItems.collectAsState().value
     val weight = viewModel.weight.collectAsState().value
     val stepGoal = viewModel.stepGoal.collectAsState().value
+    val sessionActive = viewModel.sessionActive.collectAsState().value
+
+    LaunchedEffect(sessionActive) {
+        Timber.i("Session State: $sessionActive")
+    }
 
     Column(
         modifier = modifier.fillMaxSize()
@@ -77,7 +85,10 @@ fun HomePage(
             Spacer(modifier = Modifier.weight(1f))
             StartSessionCard(
                 modifier = Modifier.size(width = 120.dp, height = 100.dp),
-                onClick = { onStartWalkClicked(weight, stepGoal) }
+                onClick = {
+                    onStartWalkClicked(weight, stepGoal, sessionActive)
+                          },
+                sessionActive = ((sessionActive == SessionState.RESUME) || (sessionActive == SessionState.PAUSE))
             )
         }
         LazyColumn(

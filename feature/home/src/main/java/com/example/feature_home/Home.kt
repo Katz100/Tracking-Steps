@@ -78,7 +78,7 @@ fun Home(
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
-            StartSessionCard(onClick = launchForeground, modifier = Modifier.size(100.dp))
+            // StartSessionCard(onClick = launchForeground, modifier = Modifier.size(100.dp))
 
             Button(onClick = stopForeground) {
                 Text("stop foreground")

@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun StartSessionCard(
     modifier: Modifier = Modifier,
+    sessionActive: Boolean,
     onClick: () -> Unit,
 ) {
     val gradient = Brush.linearGradient(
@@ -57,7 +58,7 @@ fun StartSessionCard(
             )
             Spacer(modifier = Modifier.padding(top = 8.dp))
             Text(
-                text = "START WALK",
+                text = if (sessionActive) "END SESSION"  else "BEGIN SESSION",
                 style = MaterialTheme.typography.labelLarge.copy(
                     fontWeight = FontWeight.Bold,
                     color = Color.White
@@ -73,5 +74,6 @@ fun StartSessionCardPreview() {
     StartSessionCard(
         modifier = Modifier.size(100.dp),
         onClick = {},
+        sessionActive = false
     )
 }

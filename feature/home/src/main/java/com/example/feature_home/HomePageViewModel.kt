@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.utility.data.MetricsRepository
 import com.example.utility.data.db.FoodItem
 import com.example.utility.data.FoodRepository
+import com.example.utility.foreground.SessionState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -18,7 +20,8 @@ class HomePageViewModel @Inject constructor(
     foodRepository: FoodRepository,
     metricsRepository: MetricsRepository,
 ): ViewModel() {
-    val stepsTaken = metricsRepository.stepTaken
+    val sessionActive: StateFlow<SessionState> = metricsRepository.sessionState
+    val stepsTaken: StateFlow<Int> = metricsRepository.stepTaken
     val caloriesBurned = metricsRepository.caloriesBurned
 
     val weight: StateFlow<Int> = metricsRepository.weight.stateIn(

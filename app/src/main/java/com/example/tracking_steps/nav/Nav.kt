@@ -32,6 +32,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.feature_home.HomePage
 import com.example.goals.GoalsPage
 import com.example.utility.composables.ValueStepper
+import com.example.utility.foreground.SessionState
 import com.example.utility.foreground.StepTrackingService
 import timber.log.Timber
 
@@ -94,15 +95,20 @@ fun Nav(
             composable<Screen.Home> {
                 HomePage(
                     onLogFoodClicked = onLogFoodClicked,
-                    onStartWalkClicked = { weight, stepGoal ->
-                        notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                        val intent =
-                            Intent(context, StepTrackingService::class.java).apply {
-                                putExtra("steps", 0)
-                                putExtra("goal", stepGoal)
-                                putExtra("weight", weight)
-                            }
-                        context.startForegroundService(intent)
+                    onStartWalkClicked = { weight, stepGoal, sessionState ->
+                        if (sessionState == SessionState.STOPPED) {
+                            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                            val intent =
+                                Intent(context, StepTrackingService::class.java).apply {
+                                    putExtra("steps", 0)
+                                    putExtra("goal", stepGoal)
+                                    putExtra("weight", weight)
+                                }
+                            context.startForegroundService(intent)
+                        } else {
+                            val intent = Intent(context, StepTrackingService::class.java)
+                            context.stopService(intent)
+                        }
                     }
                 )
             }

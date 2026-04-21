@@ -1,9 +1,15 @@
 package com.example.utility.foreground
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flowOf
 
 object StepCountProvider {
+    private val _sessionState = MutableStateFlow<SessionState>(SessionState.STOPPED)
+    val sessionState: StateFlow<SessionState> = _sessionState
+
     private val _currentSteps = MutableStateFlow<Int>(0)
     val currentSteps: StateFlow<Int> = _currentSteps
 
@@ -29,4 +35,15 @@ object StepCountProvider {
     fun increaseCaloriesConsumed(value: Int) {
         _caloriesConsumed.value += value
     }
+
+    fun setSessionState(state: SessionState) {
+        _sessionState.value = state
+    }
+
+}
+
+enum class SessionState {
+    PAUSE,
+    RESUME,
+    STOPPED,
 }

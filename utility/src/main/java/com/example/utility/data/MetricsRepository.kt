@@ -1,5 +1,6 @@
 package com.example.utility.data
 
+import com.example.utility.foreground.SessionState
 import com.example.utility.foreground.StepCountProvider
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
@@ -10,6 +11,7 @@ import javax.inject.Inject
 interface MetricsRepository {
     val stepTaken: StateFlow<Int>
     val caloriesBurned: StateFlow<Int>
+    val sessionState: StateFlow<SessionState>
     val weight: Flow<Int>
     val calorieFlow: Flow<Int>
     val stepGoal: Flow<Int>
@@ -25,6 +27,7 @@ class MetricsRepositoryImpl @Inject constructor(
 ): MetricsRepository {
     override val caloriesBurned: StateFlow<Int> = StepCountProvider.caloriesBurned
     override val stepTaken: StateFlow<Int> = StepCountProvider.currentSteps
+    override val sessionState: StateFlow<SessionState> = StepCountProvider.sessionState
     override val weight: Flow<Int> = dataStore.weightFlow()
     override val calorieFlow: Flow<Int> = dataStore.calorieFlow()
     override val stepGoal: Flow<Int> = dataStore.stepFlow()
