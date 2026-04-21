@@ -1,7 +1,7 @@
-package com.example.feature_home.di
+package com.example.utility.data.di
 
-import com.example.feature_home.data.MetricsRepository
-import com.example.feature_home.data.MetricsRepositoryImpl
+import com.example.utility.data.MetricsRepository
+import com.example.utility.data.MetricsRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

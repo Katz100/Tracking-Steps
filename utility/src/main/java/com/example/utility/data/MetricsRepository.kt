@@ -1,6 +1,5 @@
-package com.example.feature_home.data
+package com.example.utility.data
 
-import com.example.utility.data.DataStore
 import com.example.utility.foreground.StepCountProvider
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow

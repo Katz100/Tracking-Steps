@@ -2,7 +2,7 @@ package com.example.feature_home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.feature_home.data.MetricsRepository
+import com.example.utility.data.MetricsRepository
 import com.example.utility.data.FoodItem
 import com.example.utility.data.FoodRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
