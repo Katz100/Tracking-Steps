@@ -1,4 +1,4 @@
-package com.example.utility.data
+package com.example.utility.data.db
 
 import java.util.Date
 

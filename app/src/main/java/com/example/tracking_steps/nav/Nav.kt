@@ -56,7 +56,6 @@ fun Nav(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
             NavigationBar {
                 TopLevelDestination.entries.forEach { destination ->

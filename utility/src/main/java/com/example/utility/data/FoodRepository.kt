@@ -1,6 +1,8 @@
 package com.example.utility.data
 
 import com.example.utility.data.db.FoodDao
+import com.example.utility.data.db.FoodEntity
+import com.example.utility.data.db.FoodItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
