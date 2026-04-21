@@ -39,7 +39,6 @@ fun StepsTakenCard(
                 text = "%,d".format(stepsTaken),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.ExtraBold,
-                color = Color(0xFF111317),
                 letterSpacing = (-1).sp
             )
 

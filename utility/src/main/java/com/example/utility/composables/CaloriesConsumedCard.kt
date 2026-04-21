@@ -50,7 +50,6 @@ fun CaloriesConsumedCard(
                 Column {
                     Text(
                         text = "CONSUMED",
-                        color = colorResource(R.color.labelColor),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.SemiBold,
                         letterSpacing = 1.5.sp

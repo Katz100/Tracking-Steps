@@ -201,8 +201,6 @@ class StepTrackingService : Service() {
         stepGoal = intent.getIntExtra("goal", 0)
         weight = intent.getIntExtra("weight", 0)
 
-        StepCountProvider.updateCurrentGoal(stepGoal)
-
         try {
             val notification = NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Step tracking active")

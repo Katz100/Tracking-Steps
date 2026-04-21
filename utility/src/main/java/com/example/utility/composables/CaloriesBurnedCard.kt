@@ -52,7 +52,6 @@ fun CaloriesBurnedCard(
                 Column {
                     Text(
                         text = "BURNED",
-                        color = colorResource(R.color.labelColor),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.SemiBold,
                         letterSpacing = 1.5.sp

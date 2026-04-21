@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -55,6 +56,7 @@ fun Nav(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
+        containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
             NavigationBar {
                 TopLevelDestination.entries.forEach { destination ->
@@ -93,15 +95,14 @@ fun Nav(
             composable<Screen.Home> {
                 HomePage(
                     onLogFoodClicked = onLogFoodClicked,
-                    onStartWalkClicked = { weight ->
+                    onStartWalkClicked = { weight, stepGoal ->
                         notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                         val intent =
                             Intent(context, StepTrackingService::class.java).apply {
                                 putExtra("steps", 0)
-                                putExtra("goal", 0) // todo
+                                putExtra("goal", stepGoal)
                                 putExtra("weight", weight)
                             }
-                        Timber.d("weight: $weight")
                         context.startForegroundService(intent)
                     }
                 )
