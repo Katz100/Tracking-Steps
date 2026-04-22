@@ -21,12 +21,18 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.utility.composables.CaloriesBurnedCard
 import com.example.utility.composables.CaloriesConsumedCard
 import com.example.utility.composables.LogFoodCard
+import com.example.utility.composables.ProgressCard
 import com.example.utility.composables.StartSessionCard
 import com.example.utility.composables.StepsTakenCard
 import com.example.utility.foreground.SessionState
@@ -48,6 +54,7 @@ fun HomePage(
     val weight = viewModel.weight.collectAsState().value
     val stepGoal = viewModel.stepGoal.collectAsState().value
     val sessionActive = viewModel.sessionActive.collectAsState().value
+    val caloriesConsumedGoal = viewModel.caloriesConsumedGoal.collectAsState().value
 
     LaunchedEffect(sessionActive) {
         Timber.i("Session State: $sessionActive")
@@ -69,10 +76,28 @@ fun HomePage(
             progress = calorieProgress
         )
         Spacer(modifier = Modifier.height(30.dp))
-        CaloriesConsumedCard(
+        ProgressCard(
             modifier = Modifier.size(width = 300.dp, height = 150.dp),
-            calories = caloriesConsumed
+            value = caloriesConsumed,
+            titleText = "CALORIES CONSUMED",
+            titleTextStyle = TextStyle(
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold,
+                letterSpacing = 1.5.sp,
+            ),
+            valueTextStyle = TextStyle(
+                color = colorResource(com.example.utility.R.color.lightGreenColor),
+                fontSize = 34.sp,
+                fontWeight = FontWeight.ExtraBold,
+                lineHeight = 36.sp,
+            ),
+            icon = painterResource(com.example.utility.R.drawable.fork),
+            iconTint = colorResource(com.example.utility.R.color.lightGreenColor),
+            progress = caloriesConsumedGoal,
+            trackColor = colorResource(com.example.utility.R.color.trackColor),
+            progressColor = colorResource(com.example.utility.R.color.accent)
         )
+
         Spacer(modifier = Modifier.height(50.dp))
         Row(
             modifier = Modifier.width(300.dp),

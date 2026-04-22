@@ -44,6 +44,14 @@ class HomePageViewModel @Inject constructor(
         started = SharingStarted.Eagerly
     )
 
+    val caloriesConsumedGoal: StateFlow<Float> = metricsRepository.caloriesConsumedProgress { consumed, goal ->
+        calculateProgressForCaloriesConsumedGoal(consumed, goal)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = 0f,
+    )
+
     val currentDayFoodItems: StateFlow<List<FoodItem>> = foodRepository.currentDayFoodItems.stateIn(
         scope = viewModelScope,
         started = SharingStarted.Eagerly,
@@ -64,6 +72,11 @@ class HomePageViewModel @Inject constructor(
         return caloriesBurnt.toFloat() / calorieGoal.toFloat()
     }
 
+    private fun calculateProgressForCaloriesConsumedGoal(consumed: Int, goal: Int): Float {
+        Timber.d("Calculating progress\nConsumed: $consumed Goal $goal")
+        if (goal == 0) return 0f
+        return consumed.toFloat() / goal.toFloat()
+    }
     private fun calculateTotalCaloriesConsumed(foodItems: List<FoodItem>): Int =
         foodItems.sumOf { foodItem -> foodItem.calories }
 }

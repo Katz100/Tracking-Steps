@@ -21,6 +21,8 @@ class DataStore @Inject constructor(
 
     val STEP_GOAL = intPreferencesKey("step_goal")
 
+    val CALORIES_CONSUMED_GOAL = intPreferencesKey("calories_consumed_goal")
+
     fun weightFlow(): Flow<Int> = context.dataStore.data.map { preferences ->
         preferences[USER_WEIGHT] ?: 0
     }
@@ -31,6 +33,10 @@ class DataStore @Inject constructor(
 
     fun stepFlow(): Flow<Int> = context.dataStore.data.map { preferences ->
         preferences[STEP_GOAL] ?: 0
+    }
+
+    fun caloriesConsumedGoalFlow(): Flow<Int> = context.dataStore.data.map { preferences ->
+        preferences[CALORIES_CONSUMED_GOAL] ?: 0
     }
 
     suspend fun setNewWeight(weight: Int) {
@@ -77,6 +83,22 @@ class DataStore @Inject constructor(
         context.dataStore.updateData {
             it.toMutablePreferences().also { preferences ->
                 preferences[STEP_GOAL] = preferences[STEP_GOAL]?.plus(incrementValue) ?: 0
+            }
+        }
+    }
+
+    suspend fun decrementCaloriesConsumedGoal(decrementValue: Int) {
+        context.dataStore.updateData {
+            it.toMutablePreferences().also { preferences ->
+                preferences[CALORIES_CONSUMED_GOAL] = preferences[CALORIES_CONSUMED_GOAL]?.minus(decrementValue) ?: 0
+            }
+        }
+    }
+
+    suspend fun incrementCaloriesConsumedGoal(incrementValue: Int) {
+        context.dataStore.updateData {
+            it.toMutablePreferences().also { preferences ->
+                preferences[CALORIES_CONSUMED_GOAL] = preferences[CALORIES_CONSUMED_GOAL]?.plus(incrementValue) ?: 0
             }
         }
     }

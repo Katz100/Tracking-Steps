@@ -28,6 +28,13 @@ class GoalsPageViewModel @Inject constructor(
             started = SharingStarted.Eagerly
         )
 
+    val consumedGoal: StateFlow<Int> = metricsRepository.caloriesConsumedGoal
+        .stateIn(
+            scope = viewModelScope,
+            initialValue = 0,
+            started = SharingStarted.Eagerly
+        )
+
     fun incrementCalories() {
         viewModelScope.launch {
             metricsRepository.incrementCalories(50)
@@ -51,6 +58,19 @@ class GoalsPageViewModel @Inject constructor(
         viewModelScope.launch {
             if (stepGoal.value == 0) return@launch
             metricsRepository.decrementStepGoal(100)
+        }
+    }
+
+    fun incrementConsumedGoal() {
+        viewModelScope.launch {
+            metricsRepository.incrementConsumedGoal(100)
+        }
+    }
+
+    fun decrementConsumedGoal() {
+        viewModelScope.launch {
+            if (stepGoal.value == 0) return@launch
+            metricsRepository.decrementConsumedGoal(100)
         }
     }
 }

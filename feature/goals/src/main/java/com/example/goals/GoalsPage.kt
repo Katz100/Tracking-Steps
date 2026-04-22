@@ -22,6 +22,7 @@ fun GoalsPage(
 ) {
     val calorieGoal = viewModel.calorieGoal.collectAsState().value
     val stepGoal = viewModel.stepGoal.collectAsState().value
+    val consumedGoal = viewModel.consumedGoal.collectAsState().value
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -62,6 +63,20 @@ fun GoalsPage(
             ),
             imgText = "steps",
             img = painterResource(com.example.utility.R.drawable.walking)
+        )
+
+        ValueStepper(
+            modifier = Modifier.fillMaxWidth()
+                .height(120.dp)
+                .padding(16.dp),
+            onPlusIconClicked = viewModel::incrementConsumedGoal,
+            onSubtractIconClicked = viewModel::decrementConsumedGoal,
+            value = consumedGoal,
+            textStyle = MaterialTheme.typography.titleLarge.copy(
+                color = MaterialTheme.colorScheme.onSurface
+            ),
+            imgText = "kcal consumed",
+            img = painterResource(com.example.utility.R.drawable.fork)
         )
     }
 }
