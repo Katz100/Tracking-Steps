@@ -18,7 +18,7 @@ object HealthConnectModule {
 
     @Provides
     fun provideIsEmulatorBoolean(): Boolean {
-        return true
+        return false
     }
 
     @Provides
