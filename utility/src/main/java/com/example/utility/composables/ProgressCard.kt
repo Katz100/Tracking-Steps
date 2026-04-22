@@ -18,13 +18,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.utility.R
@@ -99,7 +102,7 @@ fun ProgressCard(
                         .fillMaxWidth(progress.coerceIn(0f, 1f))
                         .height(8.dp)
                         .clip(RoundedCornerShape(50))
-                        .background(progressColor)
+                        .background(if (progress >=  1.0f) Color.Green else progressColor)
                 )
             }
         }
@@ -126,7 +129,7 @@ fun ProgressCardPreview() {
         ),
         icon = painterResource(R.drawable.walking),
         iconTint = colorResource(R.color.accent),
-        progress = .5f,
+        progress = 1.0f,
         trackColor = colorResource(R.color.trackColor),
         progressColor = colorResource(R.color.accent)
     )
