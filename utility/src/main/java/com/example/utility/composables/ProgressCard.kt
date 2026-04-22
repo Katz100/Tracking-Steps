@@ -10,7 +10,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -18,16 +21,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.utility.R
@@ -45,6 +45,8 @@ fun ProgressCard(
     trackColor: Color,
     progressColor: Color,
 ) {
+    val goalCompleted = progress >= 1.0f
+
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(28.dp)
@@ -78,12 +80,28 @@ fun ProgressCard(
                         .size(42.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        painter = icon,
-                        contentDescription = "Icon",
-                        tint = iconTint,
-                        modifier = Modifier.size(34.dp)
-                    )
+                    if (goalCompleted) {
+                        Box(
+                            modifier = Modifier
+                                .size(36.dp)
+                                .background(Color(0xFF4CAF50).copy(alpha = 0.15f), shape = CircleShape),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Done,
+                                contentDescription = "Goal completed",
+                                tint = Color(0xFF4CAF50),
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    } else {
+                        Icon(
+                            painter = icon,
+                            contentDescription = "Icon",
+                            tint = iconTint,
+                            modifier = Modifier.size(34.dp)
+                        )
+                    }
                 }
             }
 
@@ -102,7 +120,7 @@ fun ProgressCard(
                         .fillMaxWidth(progress.coerceIn(0f, 1f))
                         .height(8.dp)
                         .clip(RoundedCornerShape(50))
-                        .background(if (progress >=  1.0f) Color.Green else progressColor)
+                        .background(if (goalCompleted) Color.Green else progressColor)
                 )
             }
         }
@@ -129,7 +147,7 @@ fun ProgressCardPreview() {
         ),
         icon = painterResource(R.drawable.walking),
         iconTint = colorResource(R.color.accent),
-        progress = 1.0f,
+        progress = 1.9f,
         trackColor = colorResource(R.color.trackColor),
         progressColor = colorResource(R.color.accent)
     )
