@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.utility.data.MetricsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
+import androidx.datastore.preferences.core.intPreferencesKey
+import com.example.utility.data.DataStore
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -37,40 +39,40 @@ class GoalsPageViewModel @Inject constructor(
 
     fun incrementCalories() {
         viewModelScope.launch {
-            metricsRepository.incrementCalories(50)
+            metricsRepository.incrementKey(intPreferencesKey(DataStore.CALORIE_GOAL), 50)
         }
     }
 
     fun decrementCalorieGoal() {
         viewModelScope.launch {
             if (calorieGoal.value == 0) return@launch
-            metricsRepository.decrementCalories(50)
+            metricsRepository.decrementKey(intPreferencesKey(DataStore.CALORIE_GOAL), 50)
         }
     }
 
     fun incrementStepGoal() {
         viewModelScope.launch {
-            metricsRepository.incrementStepGoal(100)
+            metricsRepository.incrementKey(intPreferencesKey(DataStore.STEP_GOAL), 100)
         }
     }
 
     fun decrementStepGoal() {
         viewModelScope.launch {
             if (stepGoal.value == 0) return@launch
-            metricsRepository.decrementStepGoal(100)
+            metricsRepository.decrementKey(intPreferencesKey(DataStore.STEP_GOAL), 100)
         }
     }
 
     fun incrementConsumedGoal() {
         viewModelScope.launch {
-            metricsRepository.incrementConsumedGoal(100)
+            metricsRepository.incrementKey(intPreferencesKey(DataStore.CALORIES_CONSUMED_GOAL), 100)
         }
     }
 
     fun decrementConsumedGoal() {
         viewModelScope.launch {
             if (stepGoal.value == 0) return@launch
-            metricsRepository.decrementConsumedGoal(100)
+            metricsRepository.decrementKey(intPreferencesKey(DataStore.CALORIES_CONSUMED_GOAL), 100)
         }
     }
 }

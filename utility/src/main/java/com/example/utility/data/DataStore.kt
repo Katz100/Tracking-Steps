@@ -15,6 +15,14 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "se
 class DataStore @Inject constructor(
     @ApplicationContext private val context: Context,
 ) {
+
+    companion object {
+        const val USER_WEIGHT = "weight"
+        const val CALORIE_GOAL = "calorie_goal"
+        const val STEP_GOAL = "step_goal"
+        const val CALORIES_CONSUMED_GOAL = "calories_consumed_goal"
+    }
+
     val USER_WEIGHT = intPreferencesKey("weight")
 
     val CALORIE_GOAL = intPreferencesKey("calorie_goal")
@@ -47,58 +55,18 @@ class DataStore @Inject constructor(
         }
     }
 
-    suspend fun setNewCalorieGoal(goal: Int) {
+    suspend fun incrementKey(key: Preferences.Key<Int>, incrementValue: Int) {
         context.dataStore.updateData {
             it.toMutablePreferences().also { preferences ->
-                preferences[CALORIE_GOAL] = goal
+                preferences[key] = preferences[key]?.plus(incrementValue) ?: incrementValue
             }
         }
     }
 
-    suspend fun incrementCalorieGoal(incrementValue: Int) {
+    suspend fun decrementKey(key: Preferences.Key<Int>, decrementValue: Int) {
         context.dataStore.updateData {
             it.toMutablePreferences().also { preferences ->
-                preferences[CALORIE_GOAL] = preferences[CALORIE_GOAL]?.plus(incrementValue) ?: 0
-            }
-        }
-    }
-
-    suspend fun decrementCalorieGoal(decrementValue: Int) {
-        context.dataStore.updateData {
-            it.toMutablePreferences().also { preferences ->
-                preferences[CALORIE_GOAL] = preferences[CALORIE_GOAL]?.minus(decrementValue) ?: 0
-            }
-        }
-    }
-
-    suspend fun decrementStepGoal(decrementValue: Int) {
-        context.dataStore.updateData {
-            it.toMutablePreferences().also { preferences ->
-                preferences[STEP_GOAL] = preferences[STEP_GOAL]?.minus(decrementValue) ?: 0
-            }
-        }
-    }
-
-    suspend fun incrementStepGoal(incrementValue: Int) {
-        context.dataStore.updateData {
-            it.toMutablePreferences().also { preferences ->
-                preferences[STEP_GOAL] = preferences[STEP_GOAL]?.plus(incrementValue) ?: 0
-            }
-        }
-    }
-
-    suspend fun decrementCaloriesConsumedGoal(decrementValue: Int) {
-        context.dataStore.updateData {
-            it.toMutablePreferences().also { preferences ->
-                preferences[CALORIES_CONSUMED_GOAL] = preferences[CALORIES_CONSUMED_GOAL]?.minus(decrementValue) ?: 0
-            }
-        }
-    }
-
-    suspend fun incrementCaloriesConsumedGoal(incrementValue: Int) {
-        context.dataStore.updateData {
-            it.toMutablePreferences().also { preferences ->
-                preferences[CALORIES_CONSUMED_GOAL] = preferences[CALORIES_CONSUMED_GOAL]?.plus(incrementValue) ?: 0
+                preferences[key] = preferences[key]?.minus(decrementValue) ?: 0
             }
         }
     }

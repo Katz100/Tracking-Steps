@@ -1,5 +1,6 @@
 package com.example.utility.data
 
+import androidx.datastore.preferences.core.Preferences
 import com.example.utility.data.db.FoodItem
 import com.example.utility.foreground.SessionState
 import com.example.utility.foreground.StepCountProvider
@@ -21,13 +22,8 @@ interface MetricsRepository {
     val currentDayFoodItems: Flow<List<FoodItem>>
     fun caloriesConsumedProgress(transform: (Int, Int) -> Float): Flow<Float>
     fun calorieProgress(transform: (Int, Int) -> Float): Flow<Float>
-    // TODO: Create one increment/decrement method that can be reused easily
-    suspend fun incrementCalories(incrementValue: Int)
-    suspend fun decrementCalories(decrementValue: Int)
-    suspend fun incrementStepGoal(incrementValue: Int)
-    suspend fun decrementStepGoal(decrementValue: Int)
-    suspend fun incrementConsumedGoal(incrementValue: Int)
-    suspend fun decrementConsumedGoal(decrementValue: Int)
+    suspend fun decrementKey(key: Preferences.Key<Int>, decrementValue: Int)
+    suspend fun incrementKey(key: Preferences.Key<Int>, incrementValue: Int)
 }
 
 class MetricsRepositoryImpl @Inject constructor(
@@ -58,27 +54,17 @@ class MetricsRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun incrementCalories(incrementValue: Int) {
-        dataStore.incrementCalorieGoal(incrementValue)
+    override suspend fun decrementKey(
+        key: Preferences.Key<Int>,
+        decrementValue: Int
+    ) {
+        dataStore.decrementKey(key, decrementValue)
     }
 
-    override suspend fun decrementCalories(decrementValue: Int) {
-        dataStore.decrementCalorieGoal(decrementValue)
-    }
-
-    override suspend fun incrementStepGoal(incrementValue: Int) {
-        dataStore.incrementStepGoal(incrementValue)
-    }
-
-    override suspend fun decrementStepGoal(decrementValue: Int) {
-        dataStore.decrementStepGoal(decrementValue)
-    }
-
-    override suspend fun incrementConsumedGoal(incrementValue: Int) {
-        dataStore.incrementCaloriesConsumedGoal(incrementValue)
-    }
-
-    override suspend fun decrementConsumedGoal(decrementValue: Int) {
-        dataStore.decrementCaloriesConsumedGoal(decrementValue)
+    override suspend fun incrementKey(
+        key: Preferences.Key<Int>,
+        incrementValue: Int
+    ) {
+        dataStore.incrementKey(key, incrementValue)
     }
 }
