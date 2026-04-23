@@ -7,13 +7,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.util.Date
 import javax.inject.Inject
 
 interface FoodRepository {
     val currentDayFoodItems: Flow<List<FoodItem>>
+    val allFoodItems: Flow<List<FoodItem>>
 
     suspend fun insertFoodItem(foodItem: FoodItem)
+
 }
 
 class FoodRepositoryImpl @Inject constructor(
@@ -21,7 +24,17 @@ class FoodRepositoryImpl @Inject constructor(
 ): FoodRepository {
     override val currentDayFoodItems: Flow<List<FoodItem>> =
         foodDao.getFoodItemsCreatedToday().map {entities ->
-            entities.map { entity -> entity.asDomain()
+            Timber.i("Entities: $entities")
+            entities.map { entity ->
+                Timber.i("Entity: $entity")
+                entity.asDomain()
+            }
+        }
+
+    override val allFoodItems: Flow<List<FoodItem>> =
+        foodDao.getAllFoodItems().map { entities ->
+            entities.map { entity ->
+                entity.asDomain()
             }
         }
 

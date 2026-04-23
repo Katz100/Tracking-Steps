@@ -21,6 +21,7 @@ interface MetricsRepository {
     val currentDayFoodItems: Flow<List<FoodItem>>
     fun caloriesConsumedProgress(transform: (Int, Int) -> Float): Flow<Float>
     fun calorieProgress(transform: (Int, Int) -> Float): Flow<Float>
+    // TODO: Create one increment/decrement method that can be reused easily
     suspend fun incrementCalories(incrementValue: Int)
     suspend fun decrementCalories(decrementValue: Int)
     suspend fun incrementStepGoal(incrementValue: Int)
@@ -41,7 +42,7 @@ class MetricsRepositoryImpl @Inject constructor(
     override val calorieFlow: Flow<Int> = dataStore.calorieFlow()
     override val stepGoal: Flow<Int> = dataStore.stepFlow()
     override val caloriesConsumedGoal: Flow<Int> = dataStore.caloriesConsumedGoalFlow()
-    override val currentDayFoodItems: Flow<List<FoodItem>> = foodRepository.currentDayFoodItems
+    override val currentDayFoodItems: Flow<List<FoodItem>> = foodRepository.allFoodItems
 
     override fun caloriesConsumedProgress(transform: (Int, Int) -> Float): Flow<Float> {
         return combine(dataStore.caloriesConsumedGoalFlow(), currentDayFoodItems) { caloriesGoal, foodItems ->

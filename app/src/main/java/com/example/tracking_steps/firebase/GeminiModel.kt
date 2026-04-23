@@ -39,8 +39,6 @@ class GeminiModel @Inject constructor(
             }
         )
 
-    val scope = CoroutineScope(Dispatchers.IO)
-
     suspend fun generateContentFromImage(imageBitmap: Bitmap): FoodItem? {
         return withContext(Dispatchers.IO) {
             val promptToSend = content {
@@ -50,23 +48,15 @@ class GeminiModel @Inject constructor(
 
 
             val response = model.generateContent(promptToSend).text
-
             if (response != null) {
                 val calories = JSONObject(response).getInt("calories")
                 val foodName = JSONObject(response).getString("foodName")
                 val foodItem = FoodItem(foodName = foodName, calories = calories)
-                addFoodItemToDB(foodItem)
+                foodRepository.insertFoodItem(foodItem)
                 foodItem
             } else {
                 null
             }
-        }
-    }
-
-
-    fun addFoodItemToDB(foodItem: FoodItem) {
-        scope.launch {
-            foodRepository.insertFoodItem(foodItem)
         }
     }
 }

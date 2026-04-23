@@ -60,6 +60,14 @@ fun HomePage(
         Timber.i("Session State: $sessionActive")
     }
 
+    LaunchedEffect(caloriesConsumed) {
+        Timber.i("Calories consumed: $caloriesConsumed")
+    }
+
+    LaunchedEffect(currentDayFoodItems) {
+        Timber.i("Current day food items: $currentDayFoodItems")
+    }
+
     Column(
         modifier = modifier.fillMaxSize()
             .verticalScroll(scrollState),

@@ -20,4 +20,7 @@ interface FoodDao {
            "WHERE date_added >= strftime('%s', 'now', 'localtime', 'start of day') * 1000\n" +
            "  AND date_added <  strftime('%s', 'now', 'localtime', 'start of day', '+1 day') * 1000;")
    fun getFoodItemsCreatedToday(): Flow<List<FoodEntity>>
+
+   @Query("SELECT * FROM food_item")
+   fun getAllFoodItems(): Flow<List<FoodEntity>>
 }

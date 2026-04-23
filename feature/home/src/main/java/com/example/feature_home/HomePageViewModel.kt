@@ -7,11 +7,11 @@ import com.example.utility.data.db.FoodItem
 import com.example.utility.data.FoodRepository
 import com.example.utility.foreground.SessionState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -52,7 +52,7 @@ class HomePageViewModel @Inject constructor(
         initialValue = 0f,
     )
 
-    val currentDayFoodItems: StateFlow<List<FoodItem>> = foodRepository.currentDayFoodItems.stateIn(
+    val currentDayFoodItems: StateFlow<List<FoodItem>> = foodRepository.allFoodItems.stateIn(
         scope = viewModelScope,
         started = SharingStarted.Eagerly,
         initialValue = emptyList()
@@ -79,4 +79,12 @@ class HomePageViewModel @Inject constructor(
     }
     private fun calculateTotalCaloriesConsumed(foodItems: List<FoodItem>): Int =
         foodItems.sumOf { foodItem -> foodItem.calories }
+
+    init {
+        viewModelScope.launch {
+            foodRepository.allFoodItems.collect {
+                Timber.i("Collected: ${it}")
+            }
+        }
+    }
 }

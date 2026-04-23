@@ -23,14 +23,13 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.provider.MediaStore
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
-import androidx.compose.runtime.LaunchedEffect
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.tracking_steps.firebase.GeminiModel
 import com.example.tracking_steps.nav.Nav
+import com.example.utility.data.FoodRepository
+import com.example.utility.data.db.FoodItem
 import com.example.utility.foreground.StepCountProvider
-import com.example.utility.foreground.StepTrackingService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -41,6 +40,9 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var model: GeminiModel
+
+    @Inject
+    lateinit var foodRepository: FoodRepository
 
     val requestPermissions =
         registerForActivityResult(HealthConnectService.requestPermissionsForHealthConnect) { granted ->
@@ -104,7 +106,13 @@ class MainActivity : ComponentActivity() {
             TrackingStepsTheme {
                 Nav(
                     onLogFoodClicked = {
-                        dispatchTakeImageIntent()
+                        lifecycleScope.launch {
+                            withContext(Dispatchers.IO) {
+                                foodRepository.insertFoodItem(
+                                    FoodItem(null, "Food", 200)
+                                )
+                            }
+                        }
                     },
                 )
             }
