@@ -106,13 +106,7 @@ class MainActivity : ComponentActivity() {
             TrackingStepsTheme {
                 Nav(
                     onLogFoodClicked = {
-                        lifecycleScope.launch {
-                            withContext(Dispatchers.IO) {
-                                foodRepository.insertFoodItem(
-                                    FoodItem(null, "Food", 200)
-                                )
-                            }
-                        }
+                        dispatchTakeImageIntent()
                     },
                 )
             }
