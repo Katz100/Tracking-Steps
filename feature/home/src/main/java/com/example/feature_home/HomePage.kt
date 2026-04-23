@@ -29,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.utility.R
 import com.example.utility.composables.CaloriesBurnedCard
 import com.example.utility.composables.CaloriesConsumedCard
 import com.example.utility.composables.LogFoodCard
@@ -78,10 +79,27 @@ fun HomePage(
                 .padding(top = 20.dp, bottom = 20.dp),
             stepsTaken = stepsTaken,
         )
-        CaloriesBurnedCard(
-            modifier = Modifier.size(width = 300.dp, height = 200.dp),
-            calories = caloriesBurned,
-            progress = calorieProgress
+        // Replace icon with some calorie icon
+        ProgressCard(
+            modifier = Modifier.size(width = 300.dp, height = 150.dp),
+            value = caloriesBurned,
+            titleText = "BURNED",
+            titleTextStyle = TextStyle(
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold,
+                letterSpacing = 1.5.sp,
+            ),
+            valueTextStyle = TextStyle(
+                color = colorResource(R.color.accent),
+                fontSize = 34.sp,
+                fontWeight = FontWeight.ExtraBold,
+                lineHeight = 36.sp
+            ),
+            icon = painterResource(R.drawable.walking),
+            iconTint = colorResource(R.color.accent),
+            progress = calorieProgress,
+            trackColor = colorResource(R.color.trackColor),
+            progressColor = colorResource(R.color.accent)
         )
         Spacer(modifier = Modifier.height(30.dp))
         ProgressCard(
@@ -94,16 +112,16 @@ fun HomePage(
                 letterSpacing = 1.5.sp,
             ),
             valueTextStyle = TextStyle(
-                color = colorResource(com.example.utility.R.color.lightGreenColor),
+                color = colorResource(R.color.lightGreenColor),
                 fontSize = 34.sp,
                 fontWeight = FontWeight.ExtraBold,
                 lineHeight = 36.sp,
             ),
-            icon = painterResource(com.example.utility.R.drawable.fork),
-            iconTint = colorResource(com.example.utility.R.color.lightGreenColor),
+            icon = painterResource(R.drawable.fork),
+            iconTint = colorResource(R.color.lightGreenColor),
             progress = caloriesConsumedGoal,
-            trackColor = colorResource(com.example.utility.R.color.trackColor),
-            progressColor = colorResource(com.example.utility.R.color.accent)
+            trackColor = colorResource(R.color.trackColor),
+            progressColor = colorResource(R.color.accent)
         )
 
         Spacer(modifier = Modifier.height(50.dp))
