@@ -52,7 +52,7 @@ class HomePageViewModel @Inject constructor(
         initialValue = 0f,
     )
 
-    val currentDayFoodItems: StateFlow<List<FoodItem>> = foodRepository.allFoodItems.stateIn(
+    val currentDayFoodItems: StateFlow<List<FoodItem>> = foodRepository.currentDayFoodItems.stateIn(
         scope = viewModelScope,
         started = SharingStarted.Eagerly,
         initialValue = emptyList()
