@@ -79,12 +79,4 @@ class HomePageViewModel @Inject constructor(
     }
     private fun calculateTotalCaloriesConsumed(foodItems: List<FoodItem>): Int =
         foodItems.sumOf { foodItem -> foodItem.calories }
-
-    init {
-        viewModelScope.launch {
-            foodRepository.allFoodItems.collect {
-                Timber.i("Collected: ${it}")
-            }
-        }
-    }
 }

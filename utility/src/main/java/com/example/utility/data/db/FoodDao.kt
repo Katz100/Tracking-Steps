@@ -15,10 +15,12 @@ interface FoodDao {
     @Delete
     fun deleteFoodItem(foodItem: FoodEntity)
 
-   @Query("SELECT *\n" +
-           "FROM food_item\n" +
-           "WHERE date_added >= strftime('%s', 'now', 'localtime', 'start of day') * 1000\n" +
-           "  AND date_added <  strftime('%s', 'now', 'localtime', 'start of day', '+1 day') * 1000;")
+   @Query("""
+    SELECT *
+    FROM food_item
+    WHERE date_added >= strftime('%s','now') * 1000 - 86400000
+    ORDER BY date_added DESC
+""")
    fun getFoodItemsCreatedToday(): Flow<List<FoodEntity>>
 
    @Query("SELECT * FROM food_item")

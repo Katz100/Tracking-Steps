@@ -23,7 +23,9 @@ object RoomModule {
         val db = Room.databaseBuilder(
             context,
             FoodDatabase::class.java, "food"
-        ).build()
+        )
+            .fallbackToDestructiveMigration(true)
+            .build()
         return db
     }
 

@@ -42,7 +42,7 @@ class MetricsRepositoryImpl @Inject constructor(
     override val calorieFlow: Flow<Int> = dataStore.calorieFlow()
     override val stepGoal: Flow<Int> = dataStore.stepFlow()
     override val caloriesConsumedGoal: Flow<Int> = dataStore.caloriesConsumedGoalFlow()
-    override val currentDayFoodItems: Flow<List<FoodItem>> = foodRepository.allFoodItems
+    override val currentDayFoodItems: Flow<List<FoodItem>> = foodRepository.currentDayFoodItems
 
     override fun caloriesConsumedProgress(transform: (Int, Int) -> Float): Flow<Float> {
         return combine(dataStore.caloriesConsumedGoalFlow(), currentDayFoodItems) { caloriesGoal, foodItems ->
