@@ -21,6 +21,7 @@ interface MetricsRepository {
     val stepGoal: Flow<Int>
     val currentDayFoodItems: Flow<List<FoodItem>>
     fun caloriesConsumedProgress(transform: (Int, Int) -> Float): Flow<Float>
+    fun stepGoalProgress(transform: (Int, Int) -> Float): Flow<Float>
     fun calorieProgress(transform: (Int, Int) -> Float): Flow<Float>
     suspend fun decrementKey(key: Preferences.Key<Int>, decrementValue: Int)
     suspend fun incrementKey(key: Preferences.Key<Int>, incrementValue: Int)
@@ -46,6 +47,13 @@ class MetricsRepositoryImpl @Inject constructor(
             transform(consumed, caloriesGoal)
         }
     }
+
+    override fun stepGoalProgress(transform: (Int, Int) -> Float): Flow<Float> {
+        return combine(dataStore.stepFlow(), stepTaken) {goal, current ->
+            transform(current, goal)
+        }
+    }
+
     override fun calorieProgress(
         transform: (Int, Int) -> Float,
     ): Flow<Float> {

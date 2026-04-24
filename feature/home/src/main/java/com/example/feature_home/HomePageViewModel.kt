@@ -36,6 +36,14 @@ class HomePageViewModel @Inject constructor(
         started = SharingStarted.Eagerly
     )
 
+    val stepProgress: StateFlow<Float> = metricsRepository.stepGoalProgress { current, goal ->
+        calculateProgressForCaloriesConsumedGoal(current, goal)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = 0f
+    )
+
     val calorieProgress: StateFlow<Float> = metricsRepository.calorieProgress { caloriesBurnt, calorieGoal ->
         calculateProgressForCalorieGoal(caloriesBurnt, calorieGoal)
     }.stateIn(

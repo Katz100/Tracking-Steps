@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -54,6 +55,7 @@ fun HomePage(
     val currentDayFoodItems = viewModel.currentDayFoodItems.collectAsState().value
     val weight = viewModel.weight.collectAsState().value
     val stepGoal = viewModel.stepGoal.collectAsState().value
+    val stepProgress = viewModel.stepProgress.collectAsState().value
     val sessionActive = viewModel.sessionActive.collectAsState().value
     val caloriesConsumedGoal = viewModel.caloriesConsumedGoal.collectAsState().value
 
@@ -74,14 +76,32 @@ fun HomePage(
             .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        StepsTakenCard(
-            modifier = Modifier.size(width = 300.dp, height = 100.dp)
-                .padding(top = 20.dp, bottom = 20.dp),
-            stepsTaken = stepsTaken,
+        ProgressCard(
+            modifier = Modifier.size(width = 300.dp, height = 200.dp)
+                .padding(bottom = 20.dp),
+            value = stepsTaken,
+            titleText = "STEPS",
+            titleTextStyle = TextStyle(
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold,
+                letterSpacing = 1.5.sp,
+            ),
+            valueTextStyle = TextStyle(
+                color = MaterialTheme.colorScheme.onPrimary,
+                fontSize = 34.sp,
+                fontWeight = FontWeight.ExtraBold,
+                lineHeight = 36.sp
+            ),
+            icon = painterResource(R.drawable.walking),
+            iconTint = MaterialTheme.colorScheme.onPrimary,
+            progress = stepProgress,
+            trackColor = colorResource(R.color.trackColor),
+            progressColor = colorResource(R.color.accent)
         )
+
         // Replace icon with some calorie icon
         ProgressCard(
-            modifier = Modifier.size(width = 300.dp, height = 150.dp),
+            modifier = Modifier.size(width = 300.dp, height = 200.dp),
             value = caloriesBurned,
             titleText = "BURNED",
             titleTextStyle = TextStyle(
@@ -103,7 +123,7 @@ fun HomePage(
         )
         Spacer(modifier = Modifier.height(30.dp))
         ProgressCard(
-            modifier = Modifier.size(width = 300.dp, height = 150.dp),
+            modifier = Modifier.size(width = 300.dp, height = 200.dp),
             value = caloriesConsumed,
             titleText = "CALORIES CONSUMED",
             titleTextStyle = TextStyle(
