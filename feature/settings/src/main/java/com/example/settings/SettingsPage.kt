@@ -3,9 +3,14 @@ package com.example.settings
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Error
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,6 +49,15 @@ fun SettingsPage(
             onValueChange = viewModel::onWeightChange,
             singleLine = true,
             isError = weightError != InputError.NO_ERROR,
+            supportingText = {
+                if (weightError != InputError.NO_ERROR) {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = "Invalid weight!",
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+            },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number,
                 imeAction = ImeAction.Done
@@ -52,7 +66,15 @@ fun SettingsPage(
                 onDone = {
                     localFocusManager.clearFocus()
                 }
-            )
+            ),
+            trailingIcon = {
+                if (weightError != InputError.NO_ERROR)
+                    Icon(
+                        Icons.Filled.Error,
+                        "error",
+                        tint = MaterialTheme.colorScheme.error
+                    )
+            },
         )
 
         Button(
