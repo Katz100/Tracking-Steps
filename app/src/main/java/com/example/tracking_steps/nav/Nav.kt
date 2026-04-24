@@ -19,7 +19,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -29,6 +28,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.feature_home.HomePage
 import com.example.goals.GoalsPage
+import com.example.settings.SettingsPage
 import com.example.utility.composables.CustomAlertDialog
 import com.example.utility.foreground.SessionState
 import com.example.utility.foreground.StepTrackingService
@@ -131,7 +131,7 @@ fun Nav(
                 GoalsPage()
             }
             composable<Screen.Settings> {
-               Text("Settings")
+                SettingsPage()
             }
         }
     }

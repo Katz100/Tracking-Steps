@@ -25,6 +25,7 @@ interface MetricsRepository {
     fun calorieProgress(transform: (Int, Int) -> Float): Flow<Float>
     suspend fun decrementKey(key: Preferences.Key<Int>, decrementValue: Int)
     suspend fun incrementKey(key: Preferences.Key<Int>, incrementValue: Int)
+    suspend fun setNewWeight(weight: Int)
 }
 
 class MetricsRepositoryImpl @Inject constructor(
@@ -74,5 +75,9 @@ class MetricsRepositoryImpl @Inject constructor(
         incrementValue: Int
     ) {
         dataStore.incrementKey(key, incrementValue)
+    }
+
+    override suspend fun setNewWeight(weight: Int) {
+        dataStore.setNewWeight(weight)
     }
 }

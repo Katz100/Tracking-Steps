@@ -24,9 +24,7 @@ class FoodRepositoryImpl @Inject constructor(
 ): FoodRepository {
     override val currentDayFoodItems: Flow<List<FoodItem>> =
         foodDao.getFoodItemsCreatedToday().map {entities ->
-            Timber.i("Entities: $entities")
             entities.map { entity ->
-                Timber.i("Entity: $entity")
                 entity.asDomain()
             }
         }

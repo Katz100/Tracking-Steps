@@ -75,13 +75,11 @@ class HomePageViewModel @Inject constructor(
         )
 
     private fun calculateProgressForCalorieGoal(caloriesBurnt: Int, calorieGoal: Int): Float {
-        Timber.d("Calculating: Burnt: $caloriesBurnt Goal: $calorieGoal")
         if (calorieGoal == 0) return 0f
         return caloriesBurnt.toFloat() / calorieGoal.toFloat()
     }
 
     private fun calculateProgressForCaloriesConsumedGoal(consumed: Int, goal: Int): Float {
-        Timber.d("Calculating progress\nConsumed: $consumed Goal $goal")
         if (goal == 0) return 0f
         return consumed.toFloat() / goal.toFloat()
     }
