@@ -1,6 +1,7 @@
 package com.example.settings
 
 import android.widget.Toast
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,6 +23,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
@@ -42,8 +44,13 @@ fun SettingsPage(
 
     Column(
         modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
+        Text(
+            style = MaterialTheme.typography.titleLarge,
+            text = "Profile Settings"
+        )
         OutlinedTextField(
             value = weight,
             onValueChange = viewModel::onWeightChange,
@@ -53,7 +60,7 @@ fun SettingsPage(
                 if (weightError != InputError.NO_ERROR) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = "Invalid weight!",
+                        text = viewModel.weightErrorText(weightError),
                         color = MaterialTheme.colorScheme.error
                     )
                 }

@@ -47,10 +47,18 @@ class SettingsPageViewModel @Inject constructor(
     }
 
     fun save(weight: Int) {
-        if (weightError.value != InputError.NO_ERROR) return
         viewModelScope.launch {
             Timber.i("Saving weight: $weight")
             metricsRepository.setNewWeight(weight)
+        }
+    }
+
+     fun weightErrorText(error: InputError): String {
+        return when (error) {
+            InputError.NEGATIVE_WEIGHT -> "Weight can not be negative"
+            InputError.BLANK_TEXT -> "Weight can not be blank"
+            InputError.WEIGHT_TOO_LARGE -> "Weight can not be above 1000 lbs"
+            InputError.NO_ERROR -> ""
         }
     }
 }
@@ -61,3 +69,4 @@ enum class InputError {
     WEIGHT_TOO_LARGE,
     NO_ERROR,
 }
+
