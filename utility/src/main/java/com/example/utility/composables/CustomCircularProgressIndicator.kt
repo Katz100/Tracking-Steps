@@ -25,13 +25,15 @@ fun CustomCircularProgressIndicator(
     labelText: String,
 ) {
     Box(
-        modifier = modifier
+        modifier = modifier,
+        contentAlignment = Alignment.Center
     ) {
         CircularProgressIndicator(
             modifier = Modifier.fillMaxSize(),
             progress = progress,
             color = if (progress >= 1.0f) Color.Green else progressColor,
-            trackColor = trackColor
+            trackColor = trackColor,
+            strokeWidth = 10.dp
         )
         Column(
             modifier = Modifier.align(Alignment.Center),
