@@ -8,7 +8,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -28,6 +27,7 @@ fun SettingsPage(
     val context = LocalContext.current
     val weight = viewModel.weight.collectAsState().value
     val savedWeight = viewModel.savedWeight.collectAsState().value
+    val weightError = viewModel.weightError.collectAsState().value
 
     LaunchedEffect(savedWeight) {
         if (weight.isBlank() && savedWeight != -1) {
@@ -43,6 +43,7 @@ fun SettingsPage(
             value = weight,
             onValueChange = viewModel::onWeightChange,
             singleLine = true,
+            isError = weightError != InputError.NO_ERROR,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number,
                 imeAction = ImeAction.Done
@@ -56,9 +57,10 @@ fun SettingsPage(
 
         Button(
             onClick = {
-                viewModel.saveWeight(weight.toIntOrNull() ?: 180)
+                viewModel.save(weight.toIntOrNull() ?: 180)
                 Toast.makeText(context, "Settings have been saved", Toast.LENGTH_SHORT).show()
-            }
+            },
+            enabled = weightError == InputError.NO_ERROR
         ) {
             Text("Save")
         }

@@ -7,6 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -22,25 +23,41 @@ class SettingsPageViewModel @Inject constructor(
             initialValue = -1,
             started = SharingStarted.Eagerly
         )
+
     private val _weight = MutableStateFlow<String>("")
     val weight: StateFlow<String> = _weight
+
+    val weightError: StateFlow<InputError> = _weight.map { weightText ->
+        val weight = weightText.toIntOrNull()
+        when {
+            weightText.isBlank() -> InputError.BLANK_TEXT
+            weight == null -> InputError.BLANK_TEXT
+            weight < 0 -> InputError.NEGATIVE_WEIGHT
+            weight > 1000 -> InputError.WEIGHT_TOO_LARGE
+            else -> InputError.NO_ERROR
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        initialValue = InputError.NO_ERROR,
+        started = SharingStarted.Eagerly
+    )
 
     fun onWeightChange(value: String) {
         _weight.value = value
     }
 
-    init {
-        viewModelScope.launch {
-            metricsRepository.weight.collect { weight ->
-                Timber.i("Collected weight: $weight")
-            }
-        }
-    }
-
-    fun saveWeight(value: Int) {
+    fun save(weight: Int) {
+        if (weightError.value != InputError.NO_ERROR) return
         viewModelScope.launch {
             Timber.i("Saving weight: $weight")
-            metricsRepository.setNewWeight(value)
+            metricsRepository.setNewWeight(weight)
         }
     }
+}
+
+enum class InputError {
+    NEGATIVE_WEIGHT,
+    BLANK_TEXT,
+    WEIGHT_TOO_LARGE,
+    NO_ERROR,
 }
