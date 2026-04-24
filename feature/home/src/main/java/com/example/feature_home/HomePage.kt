@@ -33,6 +33,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.utility.R
 import com.example.utility.composables.CaloriesBurnedCard
 import com.example.utility.composables.CaloriesConsumedCard
+import com.example.utility.composables.CustomCircularProgressIndicator
 import com.example.utility.composables.LogFoodCard
 import com.example.utility.composables.ProgressCard
 import com.example.utility.composables.StartSessionCard
@@ -74,29 +75,16 @@ fun HomePage(
     Column(
         modifier = modifier.fillMaxSize()
             .verticalScroll(scrollState),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(50.dp)
     ) {
-        ProgressCard(
-            modifier = Modifier.size(width = 300.dp, height = 200.dp)
-                .padding(bottom = 20.dp),
-            value = stepsTaken,
-            titleText = "STEPS",
-            titleTextStyle = TextStyle(
-                fontSize = 14.sp,
-                fontWeight = FontWeight.SemiBold,
-                letterSpacing = 1.5.sp,
-            ),
-            valueTextStyle = TextStyle(
-                color = MaterialTheme.colorScheme.onPrimary,
-                fontSize = 34.sp,
-                fontWeight = FontWeight.ExtraBold,
-                lineHeight = 36.sp
-            ),
-            icon = painterResource(R.drawable.walking),
-            iconTint = MaterialTheme.colorScheme.onPrimary,
+        CustomCircularProgressIndicator(
+            modifier = Modifier.size(220.dp),
             progress = stepProgress,
+            progressColor = colorResource(R.color.accent),
             trackColor = colorResource(R.color.trackColor),
-            progressColor = colorResource(R.color.accent)
+            value = stepsTaken,
+            labelText = "STEPS"
         )
 
         // Replace icon with some calorie icon
@@ -121,7 +109,6 @@ fun HomePage(
             trackColor = colorResource(R.color.trackColor),
             progressColor = colorResource(R.color.accent)
         )
-        Spacer(modifier = Modifier.height(30.dp))
         ProgressCard(
             modifier = Modifier.size(width = 300.dp, height = 200.dp),
             value = caloriesConsumed,
@@ -144,7 +131,6 @@ fun HomePage(
             progressColor = colorResource(R.color.accent)
         )
 
-        Spacer(modifier = Modifier.height(50.dp))
         Row(
             modifier = Modifier.width(300.dp),
             horizontalArrangement = Arrangement.Center
