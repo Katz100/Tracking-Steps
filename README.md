@@ -1,6 +1,11 @@
 # Tracking-Steps
 Android application for tracking steps and calories burned in a session
 
+<p align="center">
+  <img src="images/app1.png" alt="App screenshot 1" width="250"/>
+  <img src="images/app2.png" alt="App screenshot 2" width="250"/>
+</p>
+
 ## Features
 - Uses Android's built in sensors for tracking user steps/calories
 - Displays a persistent notification when a user starts a session
