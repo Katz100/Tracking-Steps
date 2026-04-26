@@ -79,6 +79,7 @@ class HomePageViewModel @Inject constructor(
         return caloriesBurnt.toFloat() / calorieGoal.toFloat()
     }
 
+    // TODO: Remove redundant method
     private fun calculateProgressForCaloriesConsumedGoal(consumed: Int, goal: Int): Float {
         if (goal == 0) return 0f
         return consumed.toFloat() / goal.toFloat()

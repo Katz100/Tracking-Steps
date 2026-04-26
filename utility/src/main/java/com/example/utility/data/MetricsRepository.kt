@@ -11,7 +11,10 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
 
-// Move to utility
+/*
+    TODO: Split repository into two, one for accessing data from StepCountProvider
+     and the other for accessing data from data store
+ */
 interface MetricsRepository {
     val stepTaken: StateFlow<Int>
     val caloriesBurned: StateFlow<Int>
