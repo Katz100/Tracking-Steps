@@ -71,7 +71,7 @@ class GoalsPageViewModel @Inject constructor(
 
     fun decrementConsumedGoal() {
         viewModelScope.launch {
-            if (stepGoal.value == 0) return@launch
+            if (consumedGoal.value == 0) return@launch
             metricsRepository.decrementKey(intPreferencesKey(DataStore.CALORIES_CONSUMED_GOAL), 100)
         }
     }
