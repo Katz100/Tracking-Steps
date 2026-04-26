@@ -16,19 +16,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarColors
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -38,15 +33,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.utility.R
-import com.example.utility.composables.CaloriesBurnedCard
-import com.example.utility.composables.CaloriesConsumedCard
 import com.example.utility.composables.CustomCircularProgressIndicator
 import com.example.utility.composables.LogFoodCard
 import com.example.utility.composables.ProgressCard
 import com.example.utility.composables.StartSessionCard
-import com.example.utility.composables.StepsTakenCard
 import com.example.utility.foreground.SessionState
-import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -71,9 +62,9 @@ fun HomePage(
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        topBar = { TopAppBar(
+        topBar = { CenterAlignedTopAppBar(
             title = {
-                Text("Activity")
+                Text("Activity Overview")
             },
             windowInsets = WindowInsets(0, 0, 0, 0)
         ) },
