@@ -1,7 +1,9 @@
 package com.example.utility.data
 
+import com.example.utility.data.db.FoodItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 interface PreferencesRepository {
@@ -57,6 +59,24 @@ class GetCaloriesConsumedProgressUseCase @Inject constructor(
         return combine(foodRepository.currentDayFoodItems, preferencesRepository.caloriesConsumedGoal) { foodItems, goal ->
             val current = foodItems.sumOf { foodItem -> foodItem.calories }
             calculateProgress(current, goal)
+        }
+    }
+}
+
+class GetCurrentDayFoodItemsUseCase @Inject constructor(
+    private val foodRepository: FoodRepository
+) {
+    operator fun invoke(): Flow<List<FoodItem>> {
+        return foodRepository.currentDayFoodItems
+    }
+}
+
+class GetCurrentDayCaloriesConsumed @Inject constructor(
+    private val foodRepository: FoodRepository
+) {
+    operator fun invoke(): Flow<Int> {
+        return foodRepository.currentDayFoodItems.map { foodItems ->
+            foodItems.sumOf { foodItem -> foodItem.calories }
         }
     }
 }

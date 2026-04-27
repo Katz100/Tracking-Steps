@@ -1,6 +1,5 @@
 package com.example.feature_home
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -51,13 +50,13 @@ fun HomePage(
     val stepsTaken = viewModel.stepsTaken.collectAsState().value
     val caloriesBurned = viewModel.caloriesBurned.collectAsState().value
     val caloriesConsumed = viewModel.caloriesConsumed.collectAsState().value
-    val calorieProgress = viewModel.calorieProgress.collectAsState().value
+    val calorieProgress = viewModel.caloriesBurnedProgress.collectAsState().value
     val currentDayFoodItems = viewModel.currentDayFoodItems.collectAsState().value
-    val weight = viewModel.weight.collectAsState().value
+    val weight = viewModel.userWeight.collectAsState().value
     val stepGoal = viewModel.stepGoal.collectAsState().value
-    val stepProgress = viewModel.stepProgress.collectAsState().value
-    val sessionActive = viewModel.sessionActive.collectAsState().value
-    val caloriesConsumedGoal = viewModel.caloriesConsumedGoal.collectAsState().value
+    val stepProgress = viewModel.stepGoalProgress.collectAsState().value
+    val sessionActive = viewModel.sessionState.collectAsState().value
+    val caloriesConsumedGoal = viewModel.caloriesConsumedProgress.collectAsState().value
 
 
     Scaffold(
