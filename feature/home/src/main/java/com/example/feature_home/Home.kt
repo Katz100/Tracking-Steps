@@ -1,7 +1,5 @@
 package com.example.feature_home
 
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,10 +16,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.example.utility.composables.CaloriesBurnedCard
-import com.example.utility.composables.Circular
-import com.example.utility.composables.LogFoodCard
-import com.example.utility.composables.StartSessionCard
+import com.example.utility.ui.composables.CaloriesBurnedCard
+import com.example.utility.ui.composables.Circular
+import com.example.utility.ui.composables.LogFoodCard
 
 @Deprecated("Use HomePage instead")
 @Composable

@@ -2,11 +2,11 @@ package com.example.goals
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.utility.data.MetricsRepository
+import com.example.utility.data.repository.MetricsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import androidx.datastore.preferences.core.intPreferencesKey
-import com.example.utility.data.DataStore
+import com.example.utility.data.datastore.DataStore
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch

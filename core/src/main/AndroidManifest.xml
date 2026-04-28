@@ -3,7 +3,7 @@
 
     <application>
         <activity
-            android:name=".foreground.ShareStepsActivity"
+            android:name=".service.foreground.ShareStepsActivity"
             android:exported="false" />
     </application>
 

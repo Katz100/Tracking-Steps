@@ -1,11 +1,11 @@
 package com.example.utility.data.di
 
-import com.example.utility.data.FoodRepository
-import com.example.utility.data.FoodRepositoryImpl
-import com.example.utility.data.PreferencesRepository
-import com.example.utility.data.PreferencesRepositoryImpl
-import com.example.utility.data.SessionMetricsRepository
-import com.example.utility.data.SessionMetricsRepositoryImpl
+import com.example.utility.data.repository.FoodRepository
+import com.example.utility.data.repository.FoodRepositoryImpl
+import com.example.utility.data.repository.PreferencesRepository
+import com.example.utility.data.repository.PreferencesRepositoryImpl
+import com.example.utility.data.repository.SessionMetricsRepository
+import com.example.utility.data.repository.SessionMetricsRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

@@ -32,11 +32,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.utility.R
-import com.example.utility.composables.CustomCircularProgressIndicator
-import com.example.utility.composables.LogFoodCard
-import com.example.utility.composables.ProgressCard
-import com.example.utility.composables.StartSessionCard
-import com.example.utility.foreground.SessionState
+import com.example.utility.ui.composables.CustomCircularProgressIndicator
+import com.example.utility.ui.composables.LogFoodCard
+import com.example.utility.ui.composables.ProgressCard
+import com.example.utility.ui.composables.StartSessionCard
+import com.example.utility.service.foreground.SessionState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

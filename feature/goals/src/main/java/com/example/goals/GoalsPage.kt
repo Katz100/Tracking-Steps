@@ -14,7 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.utility.composables.ValueStepper
+import com.example.utility.R
+import com.example.utility.ui.composables.ValueStepper
 
 @Composable
 fun GoalsPage(
@@ -48,7 +49,7 @@ fun GoalsPage(
                 color = MaterialTheme.colorScheme.onSurface
             ),
             imgText = "kcal",
-            img = painterResource(com.example.utility.R.drawable.calories)
+            img = painterResource(R.drawable.calories)
         )
 
         ValueStepper(
@@ -62,7 +63,7 @@ fun GoalsPage(
                 color = MaterialTheme.colorScheme.onSurface
             ),
             imgText = "steps",
-            img = painterResource(com.example.utility.R.drawable.walking)
+            img = painterResource(R.drawable.walking)
         )
 
         ValueStepper(
@@ -76,7 +77,7 @@ fun GoalsPage(
                 color = MaterialTheme.colorScheme.onSurface
             ),
             imgText = "kcal consumed",
-            img = painterResource(com.example.utility.R.drawable.fork)
+            img = painterResource(R.drawable.fork)
         )
     }
 }

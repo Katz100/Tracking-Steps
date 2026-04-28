@@ -61,7 +61,7 @@
         </activity-alias>
 
         <service
-            android:name="com.example.utility.foreground.StepTrackingService"
+            android:name="com.example.utility.service.foreground.StepTrackingService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="health" />

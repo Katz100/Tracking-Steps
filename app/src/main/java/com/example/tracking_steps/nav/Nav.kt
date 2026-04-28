@@ -29,9 +29,9 @@ import androidx.navigation.compose.rememberNavController
 import com.example.feature_home.HomePage
 import com.example.goals.GoalsPage
 import com.example.settings.SettingsPage
-import com.example.utility.composables.CustomAlertDialog
-import com.example.utility.foreground.SessionState
-import com.example.utility.foreground.StepTrackingService
+import com.example.utility.ui.composables.CustomAlertDialog
+import com.example.utility.service.foreground.SessionState
+import com.example.utility.service.foreground.StepTrackingService
 import timber.log.Timber
 import com.example.utility.R
 

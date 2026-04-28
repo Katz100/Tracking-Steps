@@ -8,11 +8,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import com.example.tracking_steps.ui.theme.TrackingStepsTheme
-import com.example.utility.health_connect.HealthConnectService
+import com.example.utility.service.health_connect.HealthConnectService
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import androidx.lifecycle.lifecycleScope
-import com.example.utility.sensor.StepSensorManager
+import com.example.utility.service.sensor.StepSensorManager
 import kotlinx.coroutines.launch
 import android.Manifest
 import android.app.ComponentCaller
@@ -25,11 +25,8 @@ import android.graphics.Bitmap
 import android.provider.MediaStore
 import com.example.tracking_steps.firebase.GeminiModel
 import com.example.tracking_steps.nav.Nav
-import com.example.utility.data.FoodRepository
-import com.example.utility.data.db.FoodItem
-import com.example.utility.foreground.StepCountProvider
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.example.utility.data.repository.FoodRepository
+import com.example.utility.service.foreground.StepCountProvider
 import timber.log.Timber
 
 @AndroidEntryPoint

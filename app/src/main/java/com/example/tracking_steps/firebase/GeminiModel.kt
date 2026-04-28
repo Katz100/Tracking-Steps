@@ -1,7 +1,7 @@
 package com.example.tracking_steps.firebase
 
 import android.graphics.Bitmap
-import com.example.utility.data.FoodRepository
+import com.example.utility.data.repository.FoodRepository
 import com.google.firebase.Firebase
 import com.google.firebase.ai.ai
 import com.google.firebase.ai.type.GenerativeBackend
@@ -9,9 +9,7 @@ import com.google.firebase.ai.type.Schema
 import com.google.firebase.ai.type.content
 import com.google.firebase.ai.type.generationConfig
 import com.example.utility.data.db.FoodItem
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import javax.inject.Inject

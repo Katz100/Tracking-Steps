@@ -1,9 +1,9 @@
 package com.example.utility
 
-import com.example.utility.activity_checker.SystemActivityRecognitionCheckerFake
-import com.example.utility.sensor.StepSensorListener
-import com.example.utility.sensor.StepSensorManager
-import com.example.utility.sensor.SystemSensorProviderFake
+import com.example.utility.service.activity_checker.SystemActivityRecognitionCheckerFake
+import com.example.utility.service.sensor.StepSensorListener
+import com.example.utility.service.sensor.StepSensorManager
+import com.example.utility.service.sensor.SystemSensorProviderFake
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
