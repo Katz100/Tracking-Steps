@@ -94,8 +94,8 @@ dependencies {
     implementation(project(":permissions-details"))
     // feature
     implementation(project(":home"))
+    implementation(project(":core"))
     // utility
-    implementation(project(":utility"))
     // goals
     implementation(project(":goals"))
     // settings
